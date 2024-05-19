@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "411006371232",
+    "project_id": "apprural-426e2",
+    "storage_bucket": "apprural-426e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411006371232:android:e7ddb1565b62c604cdd0c5",
+        "android_client_info": {
+          "package_name": "com.proyecto.apprural"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLJvK2LMks6hDoK5dOFPsrI9BgnuLK8rU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

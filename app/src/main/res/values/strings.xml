@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AppRural</string>
+    <string name="login_btn">Login</string>
+    <string name="signup_btn">Registrarse</string>
+    <string name="password_placeholder">Contraseña</string>
+    <string name="email_placeholder">Email</string>
+</resources>

@@ -31,10 +31,14 @@ public class AdminViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle arguments = new Bundle();
+        arguments.putString("currentView", "admin");
+
         if(loginFragment != null) {
             loginFragment.remove(getChildFragmentManager());
         }
         loginFragment = new LoginRouter();
+        loginFragment.setArguments(arguments);
         loginFragment.replace(getChildFragmentManager(), R.id.admin_logIn);
     }
 }

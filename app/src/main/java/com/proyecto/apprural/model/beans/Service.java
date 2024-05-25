@@ -47,4 +47,14 @@ public class Service {
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "serviceId='" + serviceId + '\'' +
+                ", name='" + name + '\'' +
+                ", included=" + included +
+                ", price=" + price +
+                '}';
+    }
 }

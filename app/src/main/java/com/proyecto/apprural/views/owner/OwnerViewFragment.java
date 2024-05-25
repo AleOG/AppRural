@@ -30,10 +30,15 @@ public class OwnerViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Bundle arguments = new Bundle();
+        arguments.putString("currentView", "owner");
+
         if(loginFragment != null) {
             loginFragment.remove(getChildFragmentManager());
         }
         loginFragment = new LoginRouter();
+        loginFragment.setArguments(arguments);
         loginFragment.replace(getChildFragmentManager(), R.id.owner_logIn);
     }
 }

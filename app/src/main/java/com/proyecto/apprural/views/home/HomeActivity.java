@@ -27,8 +27,6 @@ public class HomeActivity extends AppCompatActivity {
     private AdminRouter adminViewFragment = null;
     private OwnerRouter ownerViewFragment = null;
 
-    private LoginRouter loginFragment = null;
-
     // Initialization
 
     @Override
@@ -43,15 +41,15 @@ public class HomeActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         // Setup
-        loadTabs();
-        defaultTab();
+        loadTabsMenu();
+        defaultTabMenu();
 
     }
 
 
     // Private
 
-    private void loadTabs() {
+    private void loadTabsMenu() {
 
         // Fragments
         if (clientViewFragment != null) {
@@ -63,50 +61,43 @@ public class HomeActivity extends AppCompatActivity {
         if (ownerViewFragment != null) {
             ownerViewFragment.remove(getSupportFragmentManager());
         }
-        if(loginFragment != null) {
-            loginFragment.remove(getSupportFragmentManager());
-        }
 
         adminViewFragment = new AdminRouter();
         clientViewFragment = new ClientRouter();
         ownerViewFragment = new OwnerRouter();
-        loginFragment = new LoginRouter();
 
         binding.homeBottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
+
                 Log.e("id", String.valueOf(id));
                 if(id != -1) {
-                    switch (id) {
-                        //2131231247 id opcion admin
-                        case 2131231247:
-                            clientViewFragment.hide(getSupportFragmentManager());
-                            ownerViewFragment.hide(getSupportFragmentManager());
-                            if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.admin_menu)) == null) {
-                                adminViewFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.admin_menu));
-                            }
-                            adminViewFragment.show(getSupportFragmentManager());
-                            return true;
-                        //2131231248 id opcion cliente
-                        case 2131231248:
-                            adminViewFragment.hide(getSupportFragmentManager());
-                            ownerViewFragment.hide(getSupportFragmentManager());
-                            if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.client_menu)) == null) {
-                                clientViewFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.client_menu));
-                            }
-                            clientViewFragment.show(getSupportFragmentManager());
+                    if(id == R.id.client_menu) {
+                        adminViewFragment.hide(getSupportFragmentManager());
+                        ownerViewFragment.hide(getSupportFragmentManager());
+                        if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.client_menu)) == null) {
+                            clientViewFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.client_menu));
+                        }
+                        clientViewFragment.show(getSupportFragmentManager());
                         return true;
-                        //2131231249 id opcion owner
-                        case 2131231249:
-                            clientViewFragment.hide(getSupportFragmentManager());
-                            adminViewFragment.hide(getSupportFragmentManager());
-                            if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.owner_menu)) == null) {
-                                ownerViewFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.owner_menu));
-                            }
-                            ownerViewFragment.show(getSupportFragmentManager());
-                            return true;
-                        default:
+                    } else if (id == R.id.admin_menu) {
+                        clientViewFragment.hide(getSupportFragmentManager());
+                        ownerViewFragment.hide(getSupportFragmentManager());
+                        if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.admin_menu)) == null) {
+                            adminViewFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.admin_menu));
+                        }
+                        adminViewFragment.show(getSupportFragmentManager());
+                        return true;
+                    } else if (id == R.id.owner_menu) {
+                        clientViewFragment.hide(getSupportFragmentManager());
+                        adminViewFragment.hide(getSupportFragmentManager());
+                        if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.owner_menu)) == null) {
+                            ownerViewFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.owner_menu));
+                        }
+                        ownerViewFragment.show(getSupportFragmentManager());
+                        return true;
+                    }else {
                         return true;
                     }
                 }else {
@@ -114,50 +105,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-        /*binding.homeBottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-
-            if (selectedItem != menuItem.getItemId()) {
-
-                selectedItem = menuItem.getItemId();
-
-                switch (menuItem.getItemId()) {
-                    case R.id.home_menu_countdown:
-                        searchFragment.hide(getSupportFragmentManager());
-                        accountFragment.hide(getSupportFragmentManager());
-                        if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.home_menu_countdown)) == null) {
-                            countdownFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.home_menu_countdown), this);
-                        }
-                        countdownFragment.show(getSupportFragmentManager());
-                        return true;
-                    case R.id.home_menu_search:
-                        countdownFragment.hide(getSupportFragmentManager());
-                        accountFragment.hide(getSupportFragmentManager());
-                        if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.home_menu_search)) == null) {
-                            searchFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.home_menu_search));
-                        }
-                        searchFragment.show(getSupportFragmentManager());
-                        return true;
-                    case R.id.home_menu_account:
-                        countdownFragment.hide(getSupportFragmentManager());
-                        searchFragment.hide(getSupportFragmentManager());
-                        if (getSupportFragmentManager().findFragmentByTag(Integer.toString(R.id.home_menu_account)) == null) {
-                            accountFragment.add(getSupportFragmentManager(), R.id.homeContainer, Integer.toString(R.id.home_menu_account), this);
-                        }
-                        accountFragment.show(getSupportFragmentManager());
-                        return true;
-                    default:
-                        return false;
-                }
-            } else {
-                return false;
-            }
-        });*/
     }
 
-    private void defaultTab() {
+    private void defaultTabMenu() {
         binding.homeBottomNavigationView.setSelectedItemId(R.id.client_menu);
     }
 

@@ -2,7 +2,9 @@
   "project_info": {
     "project_number": "411006371232",
     "project_id": "apprural-426e2",
-    "storage_bucket": "apprural-426e2.appspot.com"
+    "storage_bucket": "apprural-426e2.appspot.com",
+    "firebase_url": "https://apprural-426e2-default-rtdb.europe-west1.firebasedatabase.app",
+    "region": "europe-west1"
   },
   "client": [
     {
@@ -12,7 +14,20 @@
           "package_name": "com.proyecto.apprural"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "411006371232-bdb203105kqh11hqir2nccscs69slmq2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.proyecto.apprural",
+            "certificate_hash": "b867acdce89635932e6441f3a48f5a8412df6d95"
+          }
+        },
+        {
+          "client_id": "411006371232-knal604jou5eksg6621thf0i9jnk4e46.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBLJvK2LMks6hDoK5dOFPsrI9BgnuLK8rU"
@@ -20,7 +35,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411006371232-knal604jou5eksg6621thf0i9jnk4e46.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="client"
+            type="com.proyecto.apprural.model.beans.Client" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".views.registration.RegistrationActivity">
+
+        <!-- Name -->
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:text="@={client.name}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- First Last Name -->
+        <EditText
+            android:id="@+id/firstLastName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="First Last Name"
+            android:text="@={client.firstLastName}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Second Last Name -->
+        <EditText
+            android:id="@+id/secondLastName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Second Last Name"
+            android:text="@={client.secondLastName}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/firstLastName"
+            android:layout_marginTop="8dp"/>
+
+        <!-- DNI -->
+        <EditText
+            android:id="@+id/dni"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="DNI"
+            android:text="@={client.dni}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/secondLastName"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Phone Number -->
+        <EditText
+            android:id="@+id/phoneNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Phone Number"
+            android:text="@={client.phoneNumber}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dni"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Date of Birth -->
+        <TextView
+            android:id="@+id/dateOfBirth"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Clica para seleccionar el día"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/phoneNumber"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Email -->
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:text="@={client.email}"
+            android:inputType="textEmailAddress"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dateOfBirth"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Password -->
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:text="@={client.password}"
+            android:inputType="textPassword"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/email"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Credit Card Number (Guest only) -->
+        <EditText
+            android:id="@+id/creditCardNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Credit Card Number"
+            android:text="@={client.creditCardNumber}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/password"
+            android:layout_marginTop="8dp"
+            />
+
+        <!-- Bank Account Number (Owner only) -->
+        <EditText
+            android:id="@+id/bankAccountNumber"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Bank Account Number"
+            android:text="@={client.bankAccountNumber}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/creditCardNumber"
+            android:layout_marginTop="8dp"
+            />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            app:layout_constraintTop_toBottomOf="@id/bankAccountNumber"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

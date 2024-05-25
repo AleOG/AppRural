@@ -1,5 +1,7 @@
 package com.proyecto.apprural.views.logIn;
 
+import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -9,11 +11,19 @@ import com.proyecto.apprural.views.router.FragmentRouter;
 public class LoginRouter implements FragmentRouter {
 
     private LogInFragment logInFragment;
+    private Bundle arguments;
+
+    public void setArguments(Bundle arguments) {
+        this.arguments = arguments;
+    }
 
     @Override
     public Fragment fragment() {
         if (logInFragment == null) {
             logInFragment = new LogInFragment();
+            if (arguments != null) {
+                logInFragment.setArguments(arguments);
+            }
         }
         return logInFragment;
     }

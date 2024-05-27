@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,8 @@ public class LogInFragment extends Fragment {
 
     private LoginFragmentBinding binding;
     private static final String TAG = "GoogleActivity";
+    private SharedPreferences.Editor miEditor;
+    private SharedPreferences misDatos;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private GoogleSignInClient mGoogleSignInClient;
@@ -56,10 +59,11 @@ public class LogInFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         binding = LoginFragmentBinding.inflate(inflater, container, false);
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+
         // Recuperar los argumentos
         Bundle args = getArguments();
         if (args != null) {
@@ -67,15 +71,24 @@ public class LogInFragment extends Fragment {
             // Mostrar el rol en un Toast
             Toast.makeText(getActivity(), "Emisor: " + currentView, Toast.LENGTH_SHORT).show();
         }
-        /*if (currentUser == null) {
+        /*misDatos = getContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
+        String email = misDatos.getString("email", null);
+
+        if (email == null) {
+            Log.e("Entra aquí", "Entra aquí");
             // Usuario no está logueado, mostrar fragmento de login
             return binding.getRoot();
         } else {
             // Usuario está logueado, iniciar otra actividad
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            // Cerrar el fragmento actual para que no se pueda volver con el botón "atrás"
-            getActivity().finish();
+            Bundle extras = new Bundle();
+            extras.putString("email", email);
+            extras.putString("proveedor", "email/contraseña");
+            if(currentView.equals("admin")) {
+                new AdminRouter().launch(getActivity(), extras);
+            }
+            if(currentView.equals("owner")) {
+                new OwnerRouter().launch(getActivity(),extras);
+            }
             return null; // No devolver una vista ya que se inicia otra actividad
         }*/
         return binding.getRoot();
@@ -84,9 +97,9 @@ public class LogInFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setup();
     }
+
 
     private void setup() {
     Bundle extras = new Bundle();
@@ -99,7 +112,31 @@ public class LogInFragment extends Fragment {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(getActivity(), "Please enter both email and password", Toast.LENGTH_SHORT).show();
             } else {
-                loginWithEmailAndPassword(email, password);
+                String userId = utils.generateID(email);
+                mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Maneja los datos recuperados
+                            String roleUser = snapshot.child("role").getValue().toString();
+
+                            //Log.d(TAG, "firebaseAuthWithGoogleRole: " + roleUser);
+                            loginWithEmailAndPassword(email, roleUser, password);
+                            //loginWithGoogleGmail(account.getIdToken(), roleUser, account.getEmail());
+                            //Log.d("firebase", String.valueOf(snapshot.getValue()));
+                        } else {
+                            // Maneja el caso cuando no existen datos
+                            //Log.d("firebase", "No data found for userId: " + userId);
+                            utils.showAlert(getActivity(), "Error", "Cuenta y email no registrados.");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
 
@@ -145,7 +182,7 @@ public class LogInFragment extends Fragment {
                             // Google Sign In was successful, authenticate with Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             Log.e("Account", account.getEmail());
-                            String userId = String.valueOf(account.getEmail().hashCode());
+                            String userId = utils.generateID(account.getEmail());
                             if(account != null) {
                                 mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -195,7 +232,8 @@ public class LogInFragment extends Fragment {
                             Bundle extras = new Bundle();
                             extras.putString("email",email);
                             extras.putString("proveedor", "google");
-                            if(roleUser.equals("admin")) {
+                            if(roleUser.equals("admin") && currentView.equals("admin")) {
+                                Log.e("params", roleUser + " " +currentView);
                                 new AdminRouter().launch(getActivity(), extras);
                             }
                             else if(roleUser.equals("client")) {
@@ -217,7 +255,7 @@ public class LogInFragment extends Fragment {
     }
 
 
-    private void loginWithEmailAndPassword(String email, String password) {
+    private void loginWithEmailAndPassword(String email, String roleUser, String password) {
         // Implementar la lógica de autenticación con Firebase
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -227,11 +265,17 @@ public class LogInFragment extends Fragment {
                     Bundle extras = new Bundle();
                     extras.putString("email", email);
                     extras.putString("proveedor", "email/contraseña");
-                    if(currentView.equals("admin")) {
+                    if(roleUser.equals("admin") && currentView.equals("admin")) {
+                        Log.e("params", roleUser + " " +currentView);
                         new AdminRouter().launch(getActivity(), extras);
                     }
-                    if(currentView.equals("owner")) {
-                        new OwnerRouter().launch(getActivity(),extras);
+                    else if(roleUser.equals("client")) {
+                        if(currentView.equals("owner")) {
+                            new OwnerRouter().launch(getActivity(),extras);
+                        }
+                        if(currentView.equals("guest")) {
+
+                        }
                     }
                     //getActivity().finish(); // Close the login fragment/activity
                 } else {

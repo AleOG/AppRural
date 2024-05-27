@@ -12,4 +12,10 @@ public class Util {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
+    public String generateID(String email) {
+        int code = email.hashCode();
+        String id = String.valueOf(code);
+        return id;
+    }
 }

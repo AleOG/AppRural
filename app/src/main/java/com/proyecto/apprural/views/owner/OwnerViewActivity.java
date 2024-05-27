@@ -4,16 +4,21 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
+import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.OwnerViewActivityBinding;
 import com.proyecto.apprural.views.owner.alta.OwnerAltaRouter;
 
 public class OwnerViewActivity extends AppCompatActivity {
 
     private OwnerViewActivityBinding binding;
+    private SharedPreferences.Editor miEditor;
+    private SharedPreferences misDatos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,16 +29,19 @@ public class OwnerViewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         // Recupera el Bundle de extras del intent
         Bundle bundle = intent.getExtras();
-
+        String email = null;
         // Verifica que el bundle no sea null
         if (bundle != null) {
-            String email = bundle.getString("email");
-            String proveedor = bundle.getString("proveedor");
-            setup(email, proveedor);
-        } else {
-            setup(null, null);
+            email = bundle.getString("email");
         }
 
+        //guardado de datos
+        misDatos = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
+        miEditor = misDatos.edit();
+        miEditor.putString("email", email);
+        miEditor.apply();
+
+        setup();
 
         // Manejar el botón de retroceso
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
@@ -45,7 +53,7 @@ public class OwnerViewActivity extends AppCompatActivity {
         });
     }
 
-    private void setup(String email, String provider) {
+    private void setup() {
 
         binding.altaBtn.setOnClickListener(event -> {
             new OwnerAltaRouter().launch(this);
@@ -62,6 +70,10 @@ public class OwnerViewActivity extends AppCompatActivity {
     }
 
     private void logoutAndFinish() {
+        misDatos = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
+        miEditor = misDatos.edit();
+        miEditor.clear();
+        miEditor.apply();
         FirebaseAuth.getInstance().signOut();
         finish(); // Close the activity
     }

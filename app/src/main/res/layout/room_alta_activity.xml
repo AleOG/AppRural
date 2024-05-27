@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.owner.alta.OwnerViewAltaActivity">
+    tools:context=".views.owner.alta.room.RoomAltaActivity">
 
     <ImageView
         android:id="@+id/logo"
@@ -16,11 +16,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registro de habitaciones"
+        android:textSize="24sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <!-- ScrollView wrapping the main content -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/logo"
+        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -31,29 +43,30 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Campo de entrada para el nombre del alojamiento -->
+            <!-- EditText for room name -->
             <EditText
-                android:id="@+id/name_input"
+                android:id="@+id/room_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del alojamiento"
+                android:hint="Nombre de la habitación"
                 android:padding="16dp"
                 android:layout_marginTop="16dp"/>
 
-            <!-- Campo de entrada para la dirección del alojamiento -->
-            <EditText
-                android:id="@+id/address_input"
-                android:layout_width="match_parent"
+            <!-- Spinner for room category -->
+            <Spinner
+                android:id="@+id/room_category_spinner"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Dirección del alojamiento"
-                android:padding="16dp"
-                android:layout_marginTop="16dp"/>
+                android:prompt="@string/select_category"
+                android:spinnerMode="dialog"
+                android:layout_marginTop="16dp" />
 
             <EditText
-                android:id="@+id/price_property"
+                android:id="@+id/room_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Precio"
+                android:padding="16dp"
                 android:inputType="numberDecimal"
                 android:layout_marginTop="16dp" />
 
@@ -89,66 +102,34 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"/>
 
-            <!-- Contenedor para la etiqueta de prohibiciones y el botón de añadir prohibición -->
+            <!-- Contenedor para la etiqueta de camas y el botón de añadir cama -->
             <LinearLayout
-                android:id="@+id/layout_prohibition"
+                android:id="@+id/layout_beds"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:layout_marginTop="8dp">
 
-                <!-- Etiqueta de prohibiciones -->
+                <!-- Etiqueta de camas -->
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Prohibiciones"
+                    android:text="Camas"
                     android:textSize="18sp"
                     android:layout_weight="1"/>
 
-                <!-- Botón para añadir prohibición -->
+                <!-- Botón para añadir cama -->
                 <Button
-                    android:id="@+id/add_prohibition_btn"
+                    android:id="@+id/add_bed_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Añadir Prohibición"/>
+                    android:text="Añadir Cama"/>
             </LinearLayout>
 
-            <!-- RecyclerView para mostrar la lista de prohibiciones -->
+            <!-- RecyclerView para mostrar la lista de camas -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/prohibitions_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"/>
-
-            <!-- Contenedor para la etiqueta de habitaciones y el botón de añadir habitación -->
-            <LinearLayout
-                android:id="@+id/layout_rooms"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp"
-                android:layout_marginTop="8dp">
-
-                <!-- Etiqueta de habitaciones -->
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Habitaciones"
-                    android:textSize="18sp"
-                    android:layout_weight="1"/>
-
-                <!-- Botón para añadir habitación -->
-                <Button
-                    android:id="@+id/add_room_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Añadir Habitación"/>
-            </LinearLayout>
-
-            <!-- RecyclerView para mostrar la lista de habitaciones -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rooms_recycler_view"
+                android:id="@+id/beds_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"/>
@@ -175,7 +156,7 @@
                     android:text="Salir"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,17 @@
 package com.proyecto.apprural.model.beans;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reservation {
+public class Reservation implements Serializable {
     private String reservationCode;
     private LocalDateTime checkin;
     private LocalDateTime checkout;
     private int numberOfPeople;
     private String status;
-    private BigDecimal price;
+    private double price;
     private LocalDateTime creationDate;
     private String guestId;
     private String guestName;
@@ -25,7 +25,7 @@ public class Reservation {
     public Reservation() {
     }
     public Reservation(String reservationCode, LocalDateTime checkin, LocalDateTime checkout,
-                       int numberOfPeople, String status, BigDecimal price, LocalDateTime creationDate,
+                       int numberOfPeople, String status, double price, LocalDateTime creationDate,
                        String guestId, String guestName, String ownerId, String accomodationId, String bookingType,
                        List<Room> rooms, List<Service> extraServicesProperty, List<Service> extraServicesRooms) {
         this.reservationCode = reservationCode;
@@ -85,11 +85,11 @@ public class Reservation {
         this.status = status;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

@@ -1,8 +1,9 @@
 package com.proyecto.apprural.model.beans;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Client extends User{
+public class Client extends User implements Serializable{
     private String name;
 
     private String subRole;

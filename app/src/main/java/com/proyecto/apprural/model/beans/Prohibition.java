@@ -1,6 +1,8 @@
 package com.proyecto.apprural.model.beans;
 
-public class Prohibition {
+import java.io.Serializable;
+
+public class Prohibition implements Serializable {
     private String prohibitionId;
 
     private String name;

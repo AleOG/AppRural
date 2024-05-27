@@ -134,9 +134,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                 client.setUserId(userId);
 
                                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-                                //DatabaseReference usersRef = database.getReference("users");
-                                DatabaseReference usuario = database.child("users").child(userId);
-                                usuario
+                                DatabaseReference usuarioRef = database.child("users").child(userId);
+                                usuarioRef
                                         .setValue(client)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

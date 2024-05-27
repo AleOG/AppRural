@@ -10,7 +10,6 @@ import androidx.fragment.app.DialogFragment;
 import com.proyecto.apprural.databinding.DialogAddServiceBinding;
 import com.proyecto.apprural.model.beans.Service;
 import com.proyecto.apprural.utils.Util;
-import java.math.BigDecimal;
 import java.util.UUID;
 
 public class AddServiceDialogFragment extends DialogFragment {
@@ -33,7 +32,6 @@ public class AddServiceDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //return inflater.inflate(R.layout.dialog_add_service, container, false);
         binding = DialogAddServiceBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -57,8 +55,8 @@ public class AddServiceDialogFragment extends DialogFragment {
             return; // Salir del método sin guardar el servicio
         }
 
-        // Convertir el precio a BigDecimal
-        BigDecimal price = new BigDecimal(priceText);
+        // Convertir el precio a double
+        double price = Double.parseDouble(priceText);
 
         // Generar el ID del servicio
         UUID uuid = UUID.randomUUID();
@@ -69,7 +67,7 @@ public class AddServiceDialogFragment extends DialogFragment {
 
         //Si el servicio está incluido, el precio es 0
         if(included) {
-            service.setPrice(new BigDecimal(0));
+            service.setPrice(0);
         }
 
         // Notificar al listener

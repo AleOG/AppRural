@@ -43,20 +43,7 @@ public class AdminViewActivity extends AppCompatActivity {
     }
 
     private void setup(String email, String provider) {
-        TextView emailText = findViewById(R.id.adminEmail);
-        TextView providerText = findViewById(R.id.proveedor);
 
-        if (email != null) {
-            emailText.setText(email);
-        } else {
-            emailText.setText("No email provided");
-        }
-
-        if (provider != null) {
-            providerText.setText(provider);
-        } else {
-            providerText.setText("No provider provided");
-        }
 
         Button button = findViewById(R.id.logout_btn);
 

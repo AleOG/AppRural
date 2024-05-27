@@ -1,6 +1,8 @@
 package com.proyecto.apprural.model.beans;
 
-public class Bed {
+import java.io.Serializable;
+
+public class Bed implements Serializable {
     private String type;
     private int quantity;
 
@@ -26,5 +28,13 @@ public class Bed {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Bed{" +
+                "type='" + type + '\'' +
+                ", quantity=" + quantity +
+                '}';
     }
 }

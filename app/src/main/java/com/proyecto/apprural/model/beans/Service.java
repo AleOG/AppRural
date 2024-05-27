@@ -1,15 +1,15 @@
 package com.proyecto.apprural.model.beans;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 
-public class Service {
+public class Service implements Serializable {
     private String serviceId;
     private String name;
     private boolean included;
-    private BigDecimal price;
+    private double price;
     public Service() {
     }
-    public Service(String serviceId, String name, boolean included, BigDecimal price) {
+    public Service(String serviceId, String name, boolean included, double price) {
         this.serviceId = serviceId;
         this.name = name;
         this.included = included;
@@ -40,11 +40,11 @@ public class Service {
         this.included = included;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

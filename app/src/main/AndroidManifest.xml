@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AppRural"
         tools:targetApi="31">
         <activity
+            android:name=".views.owner.publish.OwnerViewPublishActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.owner.alta.room.RoomAltaActivity"
             android:exported="false" />
         <activity

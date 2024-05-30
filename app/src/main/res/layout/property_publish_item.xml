@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="property"
+            type="com.proyecto.apprural.model.beans.Property" />
+        <variable
+            name="itemClickListener"
+            type="com.proyecto.apprural.views.owner.publish.PublishPropertyAdapter.OnPublishPropertyActionListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/item_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@{property.name}"
+            android:textSize="16sp"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/item_published"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Publicado"
+            android:textSize="16sp"
+            android:visibility="@{property.published ? View.VISIBLE : View.GONE}"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/item_no_published"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="No publicado"
+            android:textSize="16sp"
+            android:visibility="@{property.published ? View.GONE : View.VISIBLE}"
+            android:padding="8dp" />
+
+
+        <ImageButton
+            android:id="@+id/btn_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> itemClickListener.onPublishProperty(property)}"
+            android:src="@drawable/valid_property_icon"
+            android:contentDescription="@string/accept"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> itemClickListener.onNoPublishProperty(property)}"
+            android:src="@drawable/invalid_property_icon"
+            android:contentDescription="@string/cancel"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp" />
+
+    </LinearLayout>
+</layout>

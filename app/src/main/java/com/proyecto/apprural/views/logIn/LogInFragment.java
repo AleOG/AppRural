@@ -227,7 +227,6 @@ public class LogInFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
                             //updateUI(user);
                             Bundle extras = new Bundle();
                             extras.putString("email",email);

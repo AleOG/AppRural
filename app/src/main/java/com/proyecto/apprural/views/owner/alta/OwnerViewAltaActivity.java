@@ -96,7 +96,7 @@ public class OwnerViewAltaActivity extends AppCompatActivity implements
 
         //Configurar el botón de salir
         binding.exitBtn.setOnClickListener( event -> {
-            getPropertiesForOwner("ownerId");
+            //getPropertiesForOwner("ownerId");
             finish();
         });
     }
@@ -167,7 +167,7 @@ public class OwnerViewAltaActivity extends AppCompatActivity implements
         String ownerId = utils.generateID(emailSession);
 
         double price = Double.parseDouble(priceProperty);
-        Property property = new Property(propertyId, nameProperty, addressProperty, null, false, false, price, serviceList, prohibitionList, roomList, "");
+        Property property = new Property(propertyId, nameProperty, addressProperty, null, false, false, price, serviceList, prohibitionList, roomList, ownerId);
 
         DatabaseReference ownerRef = database.child("properties").child(ownerId);
 

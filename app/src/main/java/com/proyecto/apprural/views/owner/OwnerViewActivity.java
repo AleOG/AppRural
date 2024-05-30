@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.OwnerViewActivityBinding;
 import com.proyecto.apprural.views.owner.alta.OwnerAltaRouter;
+import com.proyecto.apprural.views.owner.publish.OwnerPublishRouter;
+import com.proyecto.apprural.views.owner.publish.OwnerViewPublishActivity;
 
 public class OwnerViewActivity extends AppCompatActivity {
 
@@ -59,7 +61,9 @@ public class OwnerViewActivity extends AppCompatActivity {
             new OwnerAltaRouter().launch(this);
         });
 
-        //binding.ofertaBtn.setOnClickListener();
+        binding.ofertaBtn.setOnClickListener(event -> {
+            new OwnerPublishRouter().launch(this);
+        });
 
         //binding.editaBtn.setOnClickListener();
 

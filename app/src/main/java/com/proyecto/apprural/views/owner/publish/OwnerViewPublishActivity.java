@@ -17,18 +17,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.OwnerViewPublishActivityBinding;
-import com.proyecto.apprural.databinding.PropertyOfferItemFailBinding;
 import com.proyecto.apprural.model.beans.FullAccommodationOffer;
-import com.proyecto.apprural.model.beans.Offer;
-import com.proyecto.apprural.model.beans.Prohibition;
 import com.proyecto.apprural.model.beans.Property;
-import com.proyecto.apprural.model.beans.Room;
-import com.proyecto.apprural.model.beans.Service;
 import com.proyecto.apprural.repository.OfferService;
 import com.proyecto.apprural.repository.PropertyService;
 import com.proyecto.apprural.utils.Util;
 import com.proyecto.apprural.views.common.RecyclerViewItemDecoration;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,17 +36,18 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
     private String emailSession;
     private SharedPreferences misDatos;
     private Util utils = new Util();
-    PropertyService propertyService;
-    OfferService offerService;
+    private PropertyService propertyService;
+    private OfferService offerService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.owner_view_publish_activity);
         binding.setLifecycleOwner(this);
-        propertyService = new PropertyService();
         // Inicializa la referencia de la base de datos
         mDatabase = FirebaseDatabase.getInstance().getReference();
         propertyList = new ArrayList<>();
+        propertyService = new PropertyService();
         offerService = new OfferService();
         // Configura la sesión
         session();
@@ -62,6 +57,11 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
 
         // Obtén la lista de propiedades
         getPropertiesList();
+        Log.e("actua1", "actua");
+
+        binding.exitBtn.setOnClickListener(event -> {
+            finish();
+        });
     }
 
     private void session() {
@@ -84,6 +84,8 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
 
 
     private void getPropertiesList() {
+        Log.e("actua2", "actua");
+
         String ownerID = utils.generateID(emailSession);
         mDatabase.child("properties").child(ownerID).child("propertiesOwner").addValueEventListener(new ValueEventListener() {
             @Override
@@ -110,62 +112,7 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
         });
     }
 
-    @Override
-    public void onPublishProperty(Property property) {
-        String ownerID = property.getOwnerId();
-        String propertyID = property.getPropertyId();
-        propertyService.getPropertyById(ownerID, propertyID, data -> {
-            if (data != null) {
-                FullAccommodationOffer offer = new FullAccommodationOffer(data.getOwnerId(), true, true, data.getName(),
-                        data.getAddress(), "FullAccommodationOffer", data.getPrice(), data.getServices(),
-                        data.getProhibitions(), data.getPropertyId(), data.getRooms());
 
-                Log.e("propiedad devuelta", data.toString());
-                offerService.saveFullAccommodationOffer(offer, result -> {
-                    if(result) {
-                        //se actualiza el atributo published de la propiedad
-                        propertyService.updatePublishedProperty(ownerID, propertyID, true, result1 -> {
-                            if(result) {
-                                updatePublishedStatus(propertyList, data, true);
-                                publishPropertyAdapter.notifyDataSetChanged();
-                                Log.e("success", "el campo published ha sido actualizado a true");
-                            }else {
-                                Log.e("fail", "el campo published no ha sido actualizado a true");
-                            }
-                        });
-                    }else {
-                        utils.showAlert(this, "Error", "No se ha podido publicar el alojamiento.");
-                    }
-                });
-            } else {
-                utils.showAlert(this, "Error", "No se ha podido publicar el alojamiento.");
-            }
-        });
-
-
-    }
-
-    @Override
-    public void onNoPublishProperty(Property property) {
-        String propertyID = property.getPropertyId();
-        String ownerID = property.getOwnerId();
-        offerService.deleteFullAccommodationOffer(propertyID, result -> {
-            if (result){
-                //se actualiza el atributo published de la propiedad
-                propertyService.updatePublishedProperty(ownerID, propertyID, false, result1 -> {
-                    if(result1) {
-                        updatePublishedStatus(propertyList, property, false);
-                        publishPropertyAdapter.notifyDataSetChanged();
-                        Log.e("success", "el campo published ha sido actualizado a false");
-                    }else {
-                        Log.e("fail", "el campo published no ha sido actualizado a false");
-                    }
-                });
-            }else {
-                utils.showAlert(this, "Error", "No se ha podido retirar la publicación del alojamiento.");
-            }
-        });
-    }
 
     public void updatePublishedStatus(List<Property> propertyList, Property propertyToUpdate, boolean status) {
         for (Property property : propertyList) {
@@ -173,6 +120,91 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
                 property.setPublished(status);
             }
         }
+        publishPropertyAdapter.notifyDataSetChanged();
     }
 
+    private void getPropertyById(Property property) {
+        String ownerID = property.getOwnerId();
+        String propertyID = property.getPropertyId();
+        propertyService.getPropertyById(ownerID, propertyID, data -> {
+            if (data != null) {
+                saveFullAccommodationOffer(data);
+            } else {
+                utils.showAlert(this, "Error", "No se ha podido obtener la propiedad.");
+            }
+        });
+    }
+
+    private void saveFullAccommodationOffer(Property property) {
+        FullAccommodationOffer offer = new FullAccommodationOffer(
+                property.getOwnerId(), true, true, property.getName(),
+                property.getAddress(), property.getTown(), property.getCountry(),
+                "FullAccommodationOffer", property.getPrice(), property.getServices(),
+                property.getProhibitions(), property.getCapacity(), property.getPropertyId(),
+                property.getRooms()
+        );
+
+        Log.e("propiedad devuelta", property.toString());
+        offerService.saveFullAccommodationOffer(offer, result -> {
+            if (result) {
+                updatePublishedProperty(property, true);
+            } else {
+                utils.showAlert(this, "Error", "No se ha podido publicar el alojamiento.");
+            }
+        });
+    }
+    private void updatePublishedProperty(Property property, boolean status) {
+        String ownerID = property.getOwnerId();
+        String propertyID = property.getPropertyId();
+        propertyService.updatePublishedProperty(ownerID, propertyID, status, result -> {
+            if (result) {
+                updatePublishedStatus(propertyList, property, status);
+                publishPropertyAdapter.notifyDataSetChanged();
+                Log.e("success", "el campo published ha sido actualizado a " + status);
+            } else {
+                Log.e("fail", "el campo published no ha sido actualizado a " + status);
+            }
+        });
+    }
+
+
+
+    private void deleteFullAccommodationOffer(Property property) {
+        String propertyID = property.getPropertyId();
+        offerService.deleteFullAccommodationOffer(propertyID, result -> {
+            Log.e("result", String.valueOf(result));
+            if (result) {
+                updatePublishedPropertyToFalse(property);
+            } else {
+                utils.showAlert(this, "Error", "No se ha podido retirar la publicación del alojamiento.");
+            }
+        });
+    }
+
+    private void updatePublishedPropertyToFalse(Property property) {
+        String ownerID = property.getOwnerId();
+        String propertyID = property.getPropertyId();
+        propertyService.updatePublishedPropertyToFalse(ownerID, propertyID, false, result -> {
+            if (result) {
+                updatePublishedStatus(propertyList, property, false);
+                publishPropertyAdapter.notifyDataSetChanged();
+                Log.e("success", "el campo published ha sido actualizado a false");
+            } else {
+                Log.e("fail", "el campo published no ha sido actualizado a false");
+            }
+        });
+    }
+
+    @Override
+    public void onPublish(Property property) {
+        updatePublishedStatus(propertyList, property, true);
+        getPropertyById(property);
+
+    }
+
+    @Override
+    public void onTakingOut(Property property) {
+        updatePublishedStatus(propertyList, property, false);
+        deleteFullAccommodationOffer(property);
+    }
 }

@@ -25,7 +25,7 @@ public class PropertyService {
 
     public void getPropertyById(String ownerID, String propertyID, PropertyCallback callback) {
         databaseReference.child("properties").child(ownerID)
-                .child("propertiesOwner").child(propertyID).addValueEventListener(new ValueEventListener() {
+                .child("propertiesOwner").child(propertyID).addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,6 +60,24 @@ public class PropertyService {
                 callback.onUpdateComplete(false);
             }
         });
+    }
+
+    public void updatePublishedPropertyToFalse(String ownerID, String propertyID, Boolean state, UpdateCallback callback) {
+        // Crea un mapa para actualizar el campo 'published' a 'true'
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("published", state);
+
+        databaseReference.child("properties").child(ownerID)
+                .child("propertiesOwner").child(propertyID)
+                .updateChildren(updates).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // La actualización fue exitosa
+                        callback.onUpdateComplete(true);
+                    } else {
+                        // Hubo un error al actualizar
+                        callback.onUpdateComplete(false);
+                    }
+                });
     }
 
     public interface PropertyCallback {

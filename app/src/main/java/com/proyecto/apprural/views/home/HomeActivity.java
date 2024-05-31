@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.views.admin.AdminRouter;
 import com.proyecto.apprural.views.client.ClientRouter;
-import com.proyecto.apprural.views.logIn.LoginRouter;
 import com.proyecto.apprural.views.owner.OwnerRouter;
 
 public class HomeActivity extends AppCompatActivity {
@@ -22,7 +21,6 @@ public class HomeActivity extends AppCompatActivity {
     // Properties
 
     private HomeActivityBinding binding;
-    private HomeViewModel viewModel;
     private ClientRouter clientViewFragment = null;
     private AdminRouter adminViewFragment = null;
     private OwnerRouter ownerViewFragment = null;
@@ -37,17 +35,12 @@ public class HomeActivity extends AppCompatActivity {
         // Content
         setContentView(binding.getRoot());
 
-        // View Model
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         // Setup
         loadTabsMenu();
         defaultTabMenu();
 
     }
 
-
-    // Private
 
     private void loadTabsMenu() {
 

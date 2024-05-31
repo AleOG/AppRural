@@ -1,14 +1,11 @@
 package com.proyecto.apprural.views.owner.publish;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.PropertyPublishItemBinding;
 import com.proyecto.apprural.model.beans.Property;
 
@@ -18,11 +15,11 @@ public class PublishPropertyAdapter extends RecyclerView.Adapter<PublishProperty
 
     private List<Property> propertyList;
     private LayoutInflater layoutInflater;
-    private OnPublishPropertyActionListener propertyActionListener;
+    private OnPublishPropertyActionListener onPublishPropertyActionListener;
 
-    public PublishPropertyAdapter(List<Property> propertyList, OnPublishPropertyActionListener propertyActionListener) {
+    public PublishPropertyAdapter(List<Property> propertyList, OnPublishPropertyActionListener onPublishPropertyActionListener) {
         this.propertyList = propertyList;
-        this.propertyActionListener = propertyActionListener;
+        this.onPublishPropertyActionListener = onPublishPropertyActionListener;
     }
 
     @NonNull
@@ -31,7 +28,7 @@ public class PublishPropertyAdapter extends RecyclerView.Adapter<PublishProperty
         if (layoutInflater == null) {
             layoutInflater = LayoutInflater.from(parent.getContext());
         }
-        PropertyPublishItemBinding propertyPublishItemBinding = DataBindingUtil.inflate(layoutInflater, R.layout.property_publish_item, parent, false);
+        PropertyPublishItemBinding propertyPublishItemBinding = PropertyPublishItemBinding.inflate(layoutInflater, parent, false);
         return new PublishPropertyViewHolder(propertyPublishItemBinding);
     }
 
@@ -39,7 +36,6 @@ public class PublishPropertyAdapter extends RecyclerView.Adapter<PublishProperty
     public void onBindViewHolder(@NonNull PublishPropertyViewHolder holder, int position) {
         Property property = propertyList.get(position);
         holder.bind(property);
-        holder.binding.setItemClickListener(propertyActionListener);
     }
 
     @Override
@@ -58,12 +54,22 @@ public class PublishPropertyAdapter extends RecyclerView.Adapter<PublishProperty
 
         public void bind(Property property) {
             binding.setProperty(property);
+
             binding.executePendingBindings();
+
+            binding.btnAccept.setOnClickListener(event -> {
+                onPublishPropertyActionListener.onPublish(property);
+            });
+
+            binding.btnCancel.setOnClickListener(event -> {
+                onPublishPropertyActionListener.onTakingOut(property);
+            });
         }
 
     }
     public interface OnPublishPropertyActionListener {
-        void onPublishProperty(Property property);
-        void onNoPublishProperty(Property property);
+        void onPublish(Property property);
+        void onTakingOut(Property property);
     }
+
 }

@@ -37,7 +37,6 @@ import java.util.Calendar;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private TextView selectedDate;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private RegistrationActivityBinding binding;
     private Client client;
@@ -68,6 +67,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void setup() {
 
+        TextView selectedDate = binding.dateOfBirth;
+
         OnBackPressedDispatcher onBackPressedDispatcher = getOnBackPressedDispatcher();
         onBackPressedDispatcher.addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -76,46 +77,19 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        selectedDate = findViewById(R.id.dateOfBirth);
-
-        selectedDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        RegistrationActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        dateSetListener,
-                        year, month, day
-                );
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
+        binding.birthdayBtn.setOnClickListener(event -> {
+            Calendar calendar = Calendar.getInstance();
+            long today = calendar.getTimeInMillis();
+            utils.showDatePickerDialog(selectedDate, this, 0, today);
         });
-
-        dateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                month +=1;
-                String date = dayOfMonth + "/" + month + "/" + year;
-                selectedDate.setText(date);
-                LocalDateTime dateTime = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    dateTime = LocalDateTime.of(year,month,dayOfMonth,0,0,0,0);
-                }
-                client.setDateOfBirth(dateTime);
-            }
-        };
 
         //registro del usuario
         binding.registerButton.setOnClickListener(event -> {
             registerUser(client);
         });
     }
+
+
 
     // Método para registrar un nuevo usuario y guardar su rol en Firestore
     private void registerUser(Client theClient) {
@@ -130,8 +104,13 @@ public class RegistrationActivity extends AppCompatActivity {
                                 // Obtener el email del usuario registrado
                                 String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                                 //generar el id en base al email
-                                String userId = String.valueOf(userEmail.hashCode());
+                                String userId = utils.generateID(userEmail);
                                 client.setUserId(userId);
+                                String fecha = binding.dateOfBirth.getText().toString().trim();
+                                if(!fecha.isEmpty()) {
+                                    LocalDateTime dateTime = utils.formatStringDateToLocalDateTime(fecha);
+                                    client.setDateOfBirth(dateTime);
+                                }
 
                                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
                                 DatabaseReference usuarioRef = database.child("users").child(userId);

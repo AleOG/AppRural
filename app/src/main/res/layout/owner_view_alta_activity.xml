@@ -16,11 +16,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/property_list_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/owner_register_title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        android:layout_marginStart="16dp" />
+
     <!-- ScrollView wrapping the main content -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/logo"
+        app:layout_constraintTop_toBottomOf="@id/property_list_title"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -38,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Nombre del alojamiento"
                 android:padding="16dp"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="1dp"/>
 
             <!-- Campo de entrada para la dirección del alojamiento -->
             <EditText
@@ -50,11 +62,37 @@
                 android:layout_marginTop="16dp"/>
 
             <EditText
+                android:id="@+id/town_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ciudad o pueblo donde se localiza"
+                android:padding="16dp"
+                android:layout_marginTop="16dp"/>
+
+            <EditText
+                android:id="@+id/country_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="País donde se localiza"
+                android:padding="16dp"
+                android:layout_marginTop="16dp"/>
+
+            <EditText
                 android:id="@+id/price_property"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Precio"
+                android:padding="16dp"
                 android:inputType="numberDecimal"
+                android:layout_marginTop="16dp" />
+
+            <EditText
+                android:id="@+id/capacity_property"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Capacidad del alojamiento"
+                android:inputType="number"
+                android:padding="16dp"
                 android:layout_marginTop="16dp" />
 
             <!-- Contenedor para la etiqueta de servicios y el botón de añadir servicio -->

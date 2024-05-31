@@ -8,9 +8,6 @@
         <variable
             name="property"
             type="com.proyecto.apprural.model.beans.Property" />
-        <variable
-            name="itemClickListener"
-            type="com.proyecto.apprural.views.owner.publish.PublishPropertyAdapter.OnPublishPropertyActionListener" />
     </data>
 
     <LinearLayout
@@ -53,7 +50,6 @@
             android:id="@+id/btn_accept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> itemClickListener.onPublishProperty(property)}"
             android:src="@drawable/valid_property_icon"
             android:contentDescription="@string/accept"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -64,7 +60,6 @@
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> itemClickListener.onNoPublishProperty(property)}"
             android:src="@drawable/invalid_property_icon"
             android:contentDescription="@string/cancel"
             android:background="?attr/selectableItemBackgroundBorderless"

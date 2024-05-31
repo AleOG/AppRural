@@ -155,9 +155,15 @@ public class OwnerViewAltaActivity extends AppCompatActivity implements
         String nameProperty = binding.nameInput.getText().toString().trim();
         String addressProperty = binding.addressInput.getText().toString().trim();
         String priceProperty = binding.priceProperty.getText().toString().trim();
+        String townProperty = binding.townInput.getText().toString().trim();
+        String countryProperty = binding.countryInput.getText().toString().trim();
+        String capacityProperty = binding.capacityProperty.getText().toString().trim();
 
-        if(nameProperty.isEmpty() || addressProperty.isEmpty() || priceProperty.isEmpty() || roomList.size() < 1) {
-            utils.showAlert(this, "Error", "La propiedad debe tener nombre, dirección, precio y al menos una habitación.");
+        if(nameProperty.isEmpty() || addressProperty.isEmpty() ||
+                priceProperty.isEmpty() || roomList.size() < 1 ||
+                townProperty.isEmpty() || countryProperty.isEmpty() ||
+                capacityProperty.isEmpty()) {
+            utils.showAlert(this, "Error", "La propiedad debe tener nombre, dirección, ciudad o pueblo, capacidad, precio y al menos una habitación.");
             return;
         }
         // Generar el ID del servicio
@@ -167,7 +173,8 @@ public class OwnerViewAltaActivity extends AppCompatActivity implements
         String ownerId = utils.generateID(emailSession);
 
         double price = Double.parseDouble(priceProperty);
-        Property property = new Property(propertyId, nameProperty, addressProperty, null, false, false, price, serviceList, prohibitionList, roomList, ownerId);
+        int capacity = Integer.parseInt(capacityProperty);
+        Property property = new Property(propertyId, nameProperty, addressProperty, townProperty, countryProperty, null, false, false, price, serviceList, prohibitionList, roomList, ownerId, capacity);
 
         DatabaseReference ownerRef = database.child("properties").child(ownerId);
 

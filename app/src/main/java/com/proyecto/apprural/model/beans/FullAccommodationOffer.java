@@ -12,9 +12,10 @@ public class FullAccommodationOffer extends Offer implements Serializable {
     }
 
     public FullAccommodationOffer(String idOwner, boolean published, boolean validated, String name,
-                                  String location, String offerType, double price, List<Service> services,
-                                  List<Prohibition> prohibitions, String idProperty, List<Room> rooms) {
-        super(idOwner, published, validated, name, location, offerType, price, services, prohibitions);
+                                  String address, String town, String country, String offerType, double price,
+                                  List<Service> services, List<Prohibition> prohibitions, int capacity, String idProperty,
+                                  List<Room> rooms) {
+        super(idOwner, published, validated, name, address, town, country, offerType, price, services, prohibitions, capacity);
         this.idProperty = idProperty;
         this.rooms = rooms;
     }
@@ -38,8 +39,21 @@ public class FullAccommodationOffer extends Offer implements Serializable {
     @Override
     public String toString() {
         return "FullAccommodationOffer{" +
-                "idProperty='" + idProperty + '\'' +
+                "idOwner='" + getIdOwner() + '\'' +
+                ", published=" + isPublished() +
+                ", validated=" + isValidated() +
+                ", name='" + getName() + '\'' +
+                ", address='" + getAddress() + '\'' +
+                ", town='" + getTown() + '\'' +
+                ", country='" + getCountry() + '\'' +
+                ", offerType='" + getOfferType() + '\'' +
+                ", price=" + getPrice() +
+                ", services=" + getServices() +
+                ", prohibitions=" + getProhibitions() +
+                ", capacity=" + getCapacity() +
+                ", idProperty='" + idProperty + '\'' +
                 ", rooms=" + rooms +
                 '}';
     }
+
 }

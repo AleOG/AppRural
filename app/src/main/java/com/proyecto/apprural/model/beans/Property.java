@@ -9,10 +9,13 @@ public class Property implements Serializable {
     private String propertyId;
     private String name;
     private String address;
+    private String town;
+    private String country;
     private String bookingType;
     private boolean published;
     private boolean validated;
     private double price;
+    private int capacity;
     private List<Service> services = new ArrayList<>();
     private List<Prohibition> prohibitions = new ArrayList<>();
     private List<Room> rooms = new ArrayList<>();
@@ -21,9 +24,9 @@ public class Property implements Serializable {
     public Property() {
     }
 
-    public Property(String propertyId, String name, String address, String bookingType, boolean published,
+    public Property(String propertyId, String name, String address, String town, String country, String bookingType, boolean published,
                     boolean validated, double price, List<Service> services, List<Prohibition> prohibitions,
-                    List<Room> rooms, String ownerId) {
+                    List<Room> rooms, String ownerId, int capacity) {
         this.propertyId = propertyId;
         this.name = name;
         this.address = address;
@@ -35,6 +38,9 @@ public class Property implements Serializable {
         this.prohibitions = prohibitions;
         this.rooms = rooms;
         this.ownerId = ownerId;
+        this.capacity = capacity;
+        this.town = town;
+        this.country = country;
     }
 
     public String getPropertyId() {
@@ -125,16 +131,42 @@ public class Property implements Serializable {
         this.ownerId = ownerId;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     @Override
     public String toString() {
         return "Property{" +
                 "propertyId='" + propertyId + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", town='" + town + '\'' +
+                ", country='" + country + '\'' +
                 ", bookingType='" + bookingType + '\'' +
                 ", published=" + published +
                 ", validated=" + validated +
                 ", price=" + price +
+                ", capacity=" + capacity +
                 ", services=" + services +
                 ", prohibitions=" + prohibitions +
                 ", rooms=" + rooms +

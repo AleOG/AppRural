@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <data>
+        <import type="android.view.View" />
+        <import type="com.proyecto.apprural.utils.BindingAdapters"/>
         <variable
             name="property"
             type="com.proyecto.apprural.model.beans.Property" />
@@ -53,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{property.address}" />
+                app:location="@{property}" />
         </LinearLayout>
 
         <LinearLayout
@@ -68,8 +72,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text='@{"$" + String.valueOf(property.price)}' />
+                android:text='@{String.valueOf(property.price) + " €"}' />
         </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Capacidad: " />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:capacity='@{property.capacity}' />
+            </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

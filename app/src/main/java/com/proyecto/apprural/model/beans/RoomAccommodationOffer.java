@@ -14,11 +14,13 @@ public class RoomAccommodationOffer extends Offer implements Serializable {
     public RoomAccommodationOffer() {
     }
 
-    public RoomAccommodationOffer(String idOwner, boolean published, boolean validated, String name, String location,
-                                  String offerType, double price, List<Service> services, List<Prohibition> prohibitions,
-                                  String idRoom, String category, String status, List<Bed> beds) {
-        super(idOwner, published, validated, name, location, offerType, price, services, prohibitions);
+    public RoomAccommodationOffer(String idOwner, boolean published, boolean validated, String name,
+                                  String address, String town, String country, String offerType, double price,
+                                  List<Service> services, List<Prohibition> prohibitions, int capacity, String idRoom,
+                                  String idProperty, String category, String status, List<Bed> beds) {
+        super(idOwner, published, validated, name, address, town, country, offerType, price, services, prohibitions, capacity);
         this.idRoom = idRoom;
+        this.idProperty = idProperty;
         this.category = category;
         this.status = status;
         this.beds = beds;

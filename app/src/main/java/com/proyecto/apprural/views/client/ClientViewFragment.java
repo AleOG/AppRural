@@ -9,11 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.ClientViewFragmentBinding;
+import com.proyecto.apprural.views.logIn.LoginRouter;
 
 public class ClientViewFragment extends Fragment {
 
     private ClientViewFragmentBinding binding;
+
+    private ClientSearchViewRouter clientSearchViewRouter = null;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -26,6 +30,14 @@ public class ClientViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Bundle arguments = new Bundle();
+        arguments.putString("currentView", "guest");
 
+        if(clientSearchViewRouter != null) {
+            clientSearchViewRouter.remove(getChildFragmentManager());
+        }
+        clientSearchViewRouter = new ClientSearchViewRouter();
+        clientSearchViewRouter.setArguments(arguments);
+        clientSearchViewRouter.replace(getChildFragmentManager(), R.id.guest_search);
     }
 }

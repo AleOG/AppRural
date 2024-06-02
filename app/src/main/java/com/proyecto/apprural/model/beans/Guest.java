@@ -9,7 +9,7 @@ public class Guest extends User{
     private String secondLastName;
     private String dni;
     private String phoneNumber;
-    private LocalDateTime dateOfBirth;
+    private String dateOfBirth;
     private String creditCardNumber;
     private boolean member;
     private String memberCategory;
@@ -18,9 +18,9 @@ public class Guest extends User{
     public Guest() {
     }
 
-    public Guest(String userId, String password, String email, String role, LocalDateTime registerDate,
+    public Guest(String userId, String password, String email, String role, String registerDate,
                  String name, String firstLastName, String secondLastName, String dni, String phoneNumber,
-                 LocalDateTime dateOfBirth, String creditCardNumber, boolean member, String memberCategory,
+                 String dateOfBirth, String creditCardNumber, boolean member, String memberCategory,
                  int fidelityPoints) {
         super(userId, password, email, role, registerDate);
         this.name = name;

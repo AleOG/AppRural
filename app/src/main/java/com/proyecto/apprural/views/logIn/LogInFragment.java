@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,8 +40,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.LoginFragmentBinding;
+import com.proyecto.apprural.model.beans.FullAccommodationOffer;
 import com.proyecto.apprural.utils.Util;
 import com.proyecto.apprural.views.admin.AdminRouter;
+import com.proyecto.apprural.views.client.reservation.ReservationActivityRouter;
 import com.proyecto.apprural.views.owner.OwnerRouter;
 import com.proyecto.apprural.views.registration.RegistrationRouter;
 
@@ -54,6 +57,8 @@ public class LogInFragment extends Fragment {
     private DatabaseReference mDatabase;
     private GoogleSignInClient mGoogleSignInClient;
     private String currentView;
+
+    private FullAccommodationOffer offer;
     private Util utils = new Util();
 
     @Override
@@ -68,6 +73,10 @@ public class LogInFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             currentView = args.getString("currentView");
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                offer = args.getSerializable("offer", FullAccommodationOffer.class);
+            }
             // Mostrar el rol en un Toast
             Toast.makeText(getActivity(), "Emisor: " + currentView, Toast.LENGTH_SHORT).show();
         }
@@ -141,7 +150,7 @@ public class LogInFragment extends Fragment {
         });
 
         binding.signupBtn.setOnClickListener(event -> {
-            if(currentView.equals("owner")) {
+            if(currentView.equals("owner") || currentView.equals("guest")) {
                 extras.putString("role", currentView);
                 new RegistrationRouter().launch(getActivity(), extras);
                 //getActivity().finish();
@@ -240,7 +249,9 @@ public class LogInFragment extends Fragment {
                                     new OwnerRouter().launch(getActivity(),extras);
                                 }
                                 if(currentView.equals("guest")) {
-
+                                    extras.putSerializable("offer", offer);
+                                    //Iniciar la actividad de realizar reserva
+                                    new ReservationActivityRouter().launch(getActivity(), extras);
                                 }
                             }
 
@@ -273,7 +284,9 @@ public class LogInFragment extends Fragment {
                             new OwnerRouter().launch(getActivity(),extras);
                         }
                         if(currentView.equals("guest")) {
-
+                            extras.putSerializable("offer", offer);
+                            //iniciar la actividad de realizar reserva
+                            new ReservationActivityRouter().launch(getActivity(), extras);
                         }
                     }
                     //getActivity().finish(); // Close the login fragment/activity

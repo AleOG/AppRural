@@ -13,7 +13,8 @@
     <string name="accept">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="property_list_title">Casas rurales a la espera de ser aceptadas</string>
-    <string name="owner_offer_title">"Publica tus alojamientos a tu manera "</string>
+    <string name="owner_offer_title">"Publica sus alojamientos a su manera "</string>
     <string name="exit_btn">Salir</string>
-    <string name="owner_register_title">Registra el alojamiento a tu manera</string>
+    <string name="owner_register_title">Registra el alojamiento a su manera</string>
+    <string name="reservation_registration">Realiza su reserva</string>
 </resources>

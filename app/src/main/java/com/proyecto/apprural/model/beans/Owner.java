@@ -9,16 +9,16 @@ public class Owner extends User{
     private String secondLastName;
     private String dni;
     private String phoneNumber;
-    private LocalDateTime dateOfBirth;
+    private String dateOfBirth;
     private int numberOfProperties;
     private String bankAccountNumber;
 
     public Owner() {
     }
 
-    public Owner(String userId, String password, String email, String role, LocalDateTime registerDate,
+    public Owner(String userId, String password, String email, String role, String registerDate,
                  String name, String firstLastName, String secondLastName, String dni, String phoneNumber,
-                 LocalDateTime dateOfBirth, int numberOfProperties, String bankAccountNumber) {
+                 String dateOfBirth, int numberOfProperties, String bankAccountNumber) {
         super(userId, password, email, role, registerDate);
         this.name = name;
         this.firstLastName = firstLastName;
@@ -70,12 +70,12 @@ public class Owner extends User{
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDateTime getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
     public void setDateOfBirth(LocalDateTime dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = dateOfBirth.toString();
     }
 
     public int getNumberOfProperties() {

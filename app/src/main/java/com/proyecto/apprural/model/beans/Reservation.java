@@ -1,18 +1,17 @@
 package com.proyecto.apprural.model.beans;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Reservation implements Serializable {
     private String reservationCode;
-    private LocalDateTime checkin;
-    private LocalDateTime checkout;
+    private String checkin;
+    private String checkout;
     private int numberOfPeople;
     private String status;
     private double price;
-    private LocalDateTime creationDate;
+    private String creationDate;
     private String guestId;
     private String guestName;
     private String ownerId;
@@ -24,8 +23,8 @@ public class Reservation implements Serializable {
 
     public Reservation() {
     }
-    public Reservation(String reservationCode, LocalDateTime checkin, LocalDateTime checkout,
-                       int numberOfPeople, String status, double price, LocalDateTime creationDate,
+    public Reservation(String reservationCode, String checkin, String checkout,
+                       int numberOfPeople, String status, double price, String creationDate,
                        String guestId, String guestName, String ownerId, String accomodationId, String bookingType,
                        List<Room> rooms, List<Service> extraServicesProperty, List<Service> extraServicesRooms) {
         this.reservationCode = reservationCode;
@@ -53,19 +52,19 @@ public class Reservation implements Serializable {
         this.reservationCode = reservationCode;
     }
 
-    public LocalDateTime getCheckin() {
+    public String getCheckin() {
         return checkin;
     }
 
-    public void setCheckin(LocalDateTime checkin) {
+    public void setCheckin(String checkin) {
         this.checkin = checkin;
     }
 
-    public LocalDateTime getCheckout() {
+    public String getCheckout() {
         return checkout;
     }
 
-    public void setCheckout(LocalDateTime checkout) {
+    public void setCheckout(String checkout) {
         this.checkout = checkout;
     }
 
@@ -93,11 +92,11 @@ public class Reservation implements Serializable {
         this.price = price;
     }
 
-    public LocalDateTime getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -163,5 +162,26 @@ public class Reservation implements Serializable {
 
     public void setExtraServicesRooms(List<Service> extraServicesRooms) {
         this.extraServicesRooms = extraServicesRooms;
+    }
+
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "reservationCode='" + reservationCode + '\'' +
+                ", checkin='" + checkin + '\'' +
+                ", checkout='" + checkout + '\'' +
+                ", numberOfPeople=" + numberOfPeople +
+                ", status='" + status + '\'' +
+                ", price=" + price +
+                ", creationDate='" + creationDate + '\'' +
+                ", guestId='" + guestId + '\'' +
+                ", guestName='" + guestName + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", accomodationId='" + accomodationId + '\'' +
+                ", bookingType='" + bookingType + '\'' +
+                ", rooms=" + rooms +
+                ", extraServicesProperty=" + extraServicesProperty +
+                ", extraServicesRooms=" + extraServicesRooms +
+                '}';
     }
 }

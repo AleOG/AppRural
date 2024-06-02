@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:textAppearanceMedium"
-            android:text="@{String.valueOf(offer.price)}"
+            android:text='@{String.valueOf(offer.price) + " €"}'
             android:textColor="@android:color/black"/>
 
     </LinearLayout>

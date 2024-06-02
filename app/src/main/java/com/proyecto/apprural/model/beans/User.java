@@ -7,12 +7,12 @@ public class User {
     private String password;
     private String email;
     private String role;
-    private LocalDateTime registerDate;
+    private String registerDate;
 
     public User() {
     }
 
-    public User(String userId, String password, String email, String role, LocalDateTime registerDate) {
+    public User(String userId, String password, String email, String role, String registerDate) {
         this.userId = userId;
         this.password = password;
         this.email = email;
@@ -52,11 +52,11 @@ public class User {
         this.role = role;
     }
 
-    public LocalDateTime getRegisterDate() {
+    public String getRegisterDate() {
         return registerDate;
     }
 
     public void setRegisterDate(LocalDateTime registerDate) {
-        this.registerDate = registerDate;
+        this.registerDate = registerDate.toString();
     }
 }

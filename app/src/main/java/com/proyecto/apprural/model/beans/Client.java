@@ -1,5 +1,7 @@
 package com.proyecto.apprural.model.beans;
 
+import android.os.Build;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,7 +13,7 @@ public class Client extends User implements Serializable {
     private String secondLastName;
     private String dni;
     private String phoneNumber;
-    private LocalDateTime dateOfBirth;
+    private String dateOfBirth;
     private String creditCardNumber; //atributo de guest
     private boolean member; //atributo de guest
     private String memberCategory; //atributo de guest
@@ -22,9 +24,9 @@ public class Client extends User implements Serializable {
     public Client() {
     }
 
-    public Client(String userId, String password, String email, String role, LocalDateTime registerDate,
+    public Client(String userId, String password, String email, String role, String registerDate,
                   String name, String subRole, String firstLastName, String secondLastName, String dni,
-                  String phoneNumber, LocalDateTime dateOfBirth, String creditCardNumber, boolean member,
+                  String phoneNumber, String dateOfBirth, String creditCardNumber, boolean member,
                   String memberCategory, int fidelityPoints, int numberOfProperties, String bankAccountNumber) {
         super(userId, password, email, role, registerDate);
         this.name = name;
@@ -90,12 +92,12 @@ public class Client extends User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDateTime getDateOfBirth() {
-        return dateOfBirth;
+    public String getDateOfBirth() {
+            return dateOfBirth;
     }
 
     public void setDateOfBirth(LocalDateTime dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = dateOfBirth.toString();
     }
 
     public String getCreditCardNumber() {

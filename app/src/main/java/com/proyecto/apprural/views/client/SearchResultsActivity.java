@@ -17,8 +17,12 @@ import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.SearchResultsActivityBinding;
 import com.proyecto.apprural.model.beans.FullAccommodationOffer;
 import com.proyecto.apprural.model.beans.Offer;
+import com.proyecto.apprural.model.beans.Reservation;
+import com.proyecto.apprural.utils.Util;
+import com.proyecto.apprural.views.client.reservation.AccommodationDetailsRouter;
 import com.proyecto.apprural.views.common.RecyclerViewItemDecoration;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +31,7 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
     private SearchResultsActivityBinding binding;
     private List<FullAccommodationOffer> resultsList;
     private SearchResultsAdapter adapter;
+    private Util utils = new Util();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +45,8 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
          */
         double minPrecio = 0;
         double maxPrecio = Double.POSITIVE_INFINITY;
-        String arrivalDate = "";
-        String departureDate = "";
+        LocalDateTime arrivalDate = null;
+        LocalDateTime departureDate = null;
         String destination = "";
         int travelers = 0;
         resultsList = new ArrayList<>();
@@ -62,10 +67,10 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
                 maxPrecio = Double.parseDouble(maxPrecioString);
             }
             if (arrivalDateString != null && !arrivalDateString.isEmpty()) {
-                arrivalDate = arrivalDateString;
+                arrivalDate = utils.formatStringDateToLocalDateTime(arrivalDateString);
             }
             if (departureDateString != null && !departureDateString.isEmpty()) {
-                departureDate = departureDateString;
+                departureDate = utils.formatStringDateToLocalDateTime(departureDateString);
             }
             if (destinationString != null && !destinationString.isEmpty()) {
                 destination = destinationString;
@@ -99,7 +104,7 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
      * 7º Se devuelve el id de la propiedad.
      * 8º Solo se añaden a la lista de resultados las offer con esos ids.
      */
-    private void searchOffers(double minPrecio, double maxPrecio, String arrivalDate, String departureDate, String destination, int travelers) {
+    private void searchOffers(double minPrecio, double maxPrecio, LocalDateTime arrivalDate, LocalDateTime departureDate, String destination, int travelers) {
         DatabaseReference offersRef = FirebaseDatabase.getInstance().getReference("offers");
 
         offersRef.addValueEventListener(new ValueEventListener() {
@@ -108,34 +113,74 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
                 resultsList.clear();
                 for (DataSnapshot offerSnapshot : dataSnapshot.getChildren()) {
                     FullAccommodationOffer offer = offerSnapshot.getValue(FullAccommodationOffer.class);
-                    Log.e("null", String.valueOf(offer != null));
-                    Log.e("publish", String.valueOf(offer.isPublished()));
-                    Log.e("min", String.valueOf(offer.getPrice() >= minPrecio));
-                    Log.e("precio", String.valueOf(maxPrecio));
-                    Log.e("max", String.valueOf(offer.getPrice() <= maxPrecio));
-                    Log.e("dest", String.valueOf(matchesDestination(offer, destination)));
-                    Log.e("capac", String.valueOf(offer.getCapacity()>=travelers));
                     if (offer != null && offer.isPublished() && offer.getPrice() >= minPrecio && offer.getPrice() <= maxPrecio
-                            && matchesDestination(offer, destination) && offer.getCapacity()>=travelers) {
-                        Log.e("offer out", offer.toString());
-                        // Agregar la oferta a la lista de ofertas coincidentes
-                        resultsList.add(offer);
+                            && matchesDestination(offer, destination) && offer.getCapacity() >= travelers) {
+                        String propertyID = offer.getIdProperty();
+                        DatabaseReference databaseReference;
+                        List<Reservation> reservationList = new ArrayList<>();
+                        databaseReference = FirebaseDatabase.getInstance().getReference("reservations");
+
+                        if(arrivalDate != null && departureDate != null) {
+                            databaseReference.orderByChild("accomodationId").equalTo(propertyID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    reservationList.clear();
+                                    boolean validated = true;
+                                    if (dataSnapshot.hasChildren()) {
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            Log.e("entra", "entra");
+                                            Reservation reservation = snapshot.getValue(Reservation.class);
+                                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                                LocalDateTime reservationCheckIn = LocalDateTime.parse(reservation.getCheckin());
+                                                LocalDateTime reservationCheckOut = LocalDateTime.parse(reservation.getCheckout());
+                                                boolean isArrivalOutside = arrivalDate.isBefore(reservationCheckIn) && departureDate.isBefore(reservationCheckIn);
+                                                boolean isDepartureOutside = arrivalDate.isAfter(reservationCheckOut) && departureDate.isAfter(reservationCheckOut);
+
+                                                if (!isArrivalOutside && !isDepartureOutside) {
+                                                    //Log.e("ReservationCheck", "Valid reservation with dates: " + reservation);
+                                                    Log.e("ReservationCheckOut", "Eliminada: " + offer);
+                                                    Log.e("Checkin", reservationCheckIn.toString());
+                                                    Log.e("arrival", arrivalDate.toString());
+                                                    Log.e("chechout", reservationCheckOut.toString());
+                                                    Log.e("departure", departureDate.toString());
+                                                    //resultsList.add(offer);
+                                                    validated = false;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if(validated) {
+                                            resultsList.add(offer);
+                                        }
+                                    } else {
+                                        Log.e("ReservationCheck", "No reservations found for offer: " + offer);
+                                        resultsList.add(offer);
+                                    }
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.e("Firebase", "Error al obtener las reservas", databaseError.toException());
+                                }
+                            });
+
+                        }else {
+                            resultsList.add(offer);
+                        }
+
                     }
                 }
                 adapter.notifyDataSetChanged();
-                // Ahora puedes hacer lo que necesites con la lista de ofertas coincidentes
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("SearchResultsActivity", "Error al buscar ofertas: " + error.getMessage());
-
             }
-
         });
     }
-    // Método para verificar si una oferta coincide con el destino
+
     private boolean matchesDestination(Offer offer, String destination) {
         if(destination.isEmpty()) {
             return true;
@@ -146,6 +191,10 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
 
     @Override
     public void onClick(FullAccommodationOffer offer) {
-        Log.e("offer recuperada", offer.toString());
+        //Log.e("offer recuperada", offer.toString());
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("offer", offer);
+
+        new AccommodationDetailsRouter().launch(this, bundle);
     }
 }

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,6 +109,16 @@ public class ClientSearchViewFragment extends Fragment {
 
             double precioMinAunx = minPrecioString.isEmpty() ? 0 : Double.parseDouble(minPrecioString);
             double precioMaxAux = maxPrecioString.isEmpty() ? Double.POSITIVE_INFINITY : Double.parseDouble(maxPrecioString);
+            //Log.e("fecha llegada", arrivalDateString);
+            //Log.e("fecha salida", departureDateString);
+            if(arrivalDateString.isEmpty() && !departureDateString.isEmpty()) {
+                utils.showAlert(getContext(), "Aviso", "Selecciona fecha de llegada.");
+                return;
+            }
+            if(departureDateString.isEmpty() && !arrivalDateString.isEmpty()) {
+                utils.showAlert(getContext(), "Aviso", "Selecciona fecha de salida.");
+                return;
+            }
 
             if(precioMinAunx>precioMaxAux) {
                 utils.showAlert(getContext(), "Aviso", "El precio máximo debe ser superior al mínimo.");

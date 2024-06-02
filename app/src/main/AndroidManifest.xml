@@ -15,6 +15,15 @@
         android:theme="@style/Theme.AppRural"
         tools:targetApi="31">
         <activity
+            android:name=".views.client.reservation.ReservationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.client.ClientViewLogin"
+            android:exported="false" />
+        <activity
+            android:name=".views.client.reservation.AccommodationDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.client.SearchResultsActivity"
             android:exported="false" />
         <activity

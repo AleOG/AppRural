@@ -1,8 +1,6 @@
 package com.proyecto.apprural.views.logIn;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -19,6 +17,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -31,7 +30,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.LoginFragmentBinding;
 import com.proyecto.apprural.model.beans.FullAccommodationOffer;
+import com.proyecto.apprural.model.beans.User;
 import com.proyecto.apprural.utils.Util;
 import com.proyecto.apprural.views.admin.AdminRouter;
 import com.proyecto.apprural.views.client.reservation.ReservationActivityRouter;
@@ -65,41 +64,34 @@ public class LogInFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = LoginFragmentBinding.inflate(inflater, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.login_fragment, container, false);
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // Recuperar los argumentos
         Bundle args = getArguments();
         if (args != null) {
             currentView = args.getString("currentView");
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 offer = args.getSerializable("offer", FullAccommodationOffer.class);
+            } else {
+                offer = (FullAccommodationOffer) args.getSerializable("offer");
             }
-            // Mostrar el rol en un Toast
+            User user = new User();
+            //Se recupera el tipo de rol del usuario
+            if(currentView.equals("admin")) {
+                user.setRole("admin");
+            }else if(currentView.equals("owner")) {
+                user.setRole("owner");
+            }else {
+                user.setRole("guest");
+            }
+            binding.setUser(user);
+            binding.executePendingBindings();
             Toast.makeText(getActivity(), "Emisor: " + currentView, Toast.LENGTH_SHORT).show();
         }
-        /*misDatos = getContext().getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
-        String email = misDatos.getString("email", null);
 
-        if (email == null) {
-            Log.e("Entra aquí", "Entra aquí");
-            // Usuario no está logueado, mostrar fragmento de login
-            return binding.getRoot();
-        } else {
-            // Usuario está logueado, iniciar otra actividad
-            Bundle extras = new Bundle();
-            extras.putString("email", email);
-            extras.putString("proveedor", "email/contraseña");
-            if(currentView.equals("admin")) {
-                new AdminRouter().launch(getActivity(), extras);
-            }
-            if(currentView.equals("owner")) {
-                new OwnerRouter().launch(getActivity(),extras);
-            }
-            return null; // No devolver una vista ya que se inicia otra actividad
-        }*/
         return binding.getRoot();
     }
 
@@ -110,6 +102,9 @@ public class LogInFragment extends Fragment {
     }
 
 
+    /**
+     * Función que inicializa y configura los elementos de la actividad
+     */
     private void setup() {
     Bundle extras = new Bundle();
 
@@ -117,7 +112,6 @@ public class LogInFragment extends Fragment {
             String email = binding.emailEdtText.getText().toString().trim();
             String password = binding.passEdtText.getText().toString().trim();
 
-            // Validar las credenciales de inicio de sesión
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(getActivity(), "Please enter both email and password", Toast.LENGTH_SHORT).show();
             } else {
@@ -127,16 +121,11 @@ public class LogInFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            // Maneja los datos recuperados
                             String roleUser = snapshot.child("role").getValue().toString();
 
-                            //Log.d(TAG, "firebaseAuthWithGoogleRole: " + roleUser);
                             loginWithEmailAndPassword(email, roleUser, password);
-                            //loginWithGoogleGmail(account.getIdToken(), roleUser, account.getEmail());
-                            //Log.d("firebase", String.valueOf(snapshot.getValue()));
+
                         } else {
-                            // Maneja el caso cuando no existen datos
-                            //Log.d("firebase", "No data found for userId: " + userId);
                             utils.showAlert(getActivity(), "Error", "Cuenta y email no registrados.");
                         }
                     }
@@ -153,7 +142,6 @@ public class LogInFragment extends Fragment {
             if(currentView.equals("owner") || currentView.equals("guest")) {
                 extras.putString("role", currentView);
                 new RegistrationRouter().launch(getActivity(), extras);
-                //getActivity().finish();
             }
             if(currentView.equals("admin")) {
 
@@ -177,6 +165,9 @@ public class LogInFragment extends Fragment {
 
     }
 
+    /**
+     * Acción que se ejecuta cuando se clica en el botón de sigin con google
+     */
     ActivityResultLauncher<Intent> resultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -188,23 +179,22 @@ public class LogInFragment extends Fragment {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(intent);
 
                         try {
-                            // Google Sign In was successful, authenticate with Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             Log.e("Account", account.getEmail());
                             String userId = utils.generateID(account.getEmail());
                             if(account != null) {
+
+                                //se comprueba si el cliente existe registrado en base de datos
                                 mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
-                                            // Maneja los datos recuperados
                                             String roleUser = dataSnapshot.child("role").getValue().toString();
 
                                             Log.d(TAG, "firebaseAuthWithGoogleRole: " + roleUser);
                                             loginWithGoogleGmail(account.getIdToken(), roleUser, account.getEmail());
                                             Log.d("firebase", String.valueOf(dataSnapshot.getValue()));
                                         } else {
-                                            // Maneja el caso cuando no existen datos
                                             Log.d("firebase", "No data found for userId: " + userId);
                                             utils.showAlert(getActivity(), "Error", "Cuenta y email no registrados.");
                                         }
@@ -212,14 +202,12 @@ public class LogInFragment extends Fragment {
 
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
-                                        // Maneja los errores
                                         Log.e("firebase", "Error getting data", databaseError.toException());
                                     }
                                 });
                             }
 
                         } catch (ApiException e) {
-                            // Google Sign In failed, update UI appropriately
                             Log.w(TAG, "Google sign in failed", e);
                             utils.showAlert(getActivity(), "Error", "Fallo en login con Gmail");
                         }
@@ -228,6 +216,13 @@ public class LogInFragment extends Fragment {
             }
     );
 
+    /**
+     * Función que realiza el logueo con el servicio de SignIn with Google de Firebase. Si es exitoso inicializa la actividad correspondiente.
+     *
+     * @param idToken
+     * @param roleUser
+     * @param email
+     */
     private void loginWithGoogleGmail(String idToken, String roleUser, String email) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -235,8 +230,6 @@ public class LogInFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            //updateUI(user);
                             Bundle extras = new Bundle();
                             extras.putString("email",email);
                             extras.putString("proveedor", "google");
@@ -250,13 +243,11 @@ public class LogInFragment extends Fragment {
                                 }
                                 if(currentView.equals("guest")) {
                                     extras.putSerializable("offer", offer);
-                                    //Iniciar la actividad de realizar reserva
                                     new ReservationActivityRouter().launch(getActivity(), extras);
                                 }
                             }
 
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             utils.showAlert(getActivity(), "Error", "Fallo en login con Gmail");
                         }
@@ -265,8 +256,14 @@ public class LogInFragment extends Fragment {
     }
 
 
+    /**
+     * Función que realiza el logueo con el servicio de email/password de Firebase. Si es exitoso inicializa la actividad correspondiente.
+     *
+     * @param email
+     * @param roleUser
+     * @param password
+     */
     private void loginWithEmailAndPassword(String email, String roleUser, String password) {
-        // Implementar la lógica de autenticación con Firebase
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -285,15 +282,11 @@ public class LogInFragment extends Fragment {
                         }
                         if(currentView.equals("guest")) {
                             extras.putSerializable("offer", offer);
-                            //iniciar la actividad de realizar reserva
                             new ReservationActivityRouter().launch(getActivity(), extras);
                         }
                     }
-                    //getActivity().finish(); // Close the login fragment/activity
                 } else {
-                    // If sign in fails, display a message to the user.
                     utils.showAlert(getActivity(), "Error", "Email o contraseña erroneos");
-                    //Toast.makeText(getActivity(), "Authentication Failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

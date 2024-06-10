@@ -1,52 +1,92 @@
 package com.proyecto.apprural.views.client.reservation;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.AccommodationDetailsActivityBinding;
 import com.proyecto.apprural.model.beans.FullAccommodationOffer;
-import com.proyecto.apprural.model.beans.Reservation;
-import com.proyecto.apprural.model.beans.Room;
-import com.proyecto.apprural.model.beans.Service;
 import com.proyecto.apprural.views.client.ClientViewLoginRouter;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.firebase.storage.StorageReference;
 
 public class AccommodationDetailsActivity extends AppCompatActivity {
 
     private AccommodationDetailsActivityBinding binding;
     private FullAccommodationOffer offer =null;
+    ShapeableImageView foto_usuario;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Configurar DataBinding
         binding = DataBindingUtil.setContentView(this, R.layout.accommodation_details_activity);
         binding.getLifecycleOwner();
 
-        // Retrieve FullAccommodationOffer from Intent
         FullAccommodationOffer offerAux = (FullAccommodationOffer) getIntent().getSerializableExtra("offer");
 
         if (offerAux != null) {
-            // Set offer to binding
             Log.e("offer en accomodation", offerAux.toString());
             binding.setOffer(offerAux);
             offer = offerAux;
         }
 
+        foto_usuario = binding.imagenUsuario;
+
+        StorageReference refImagenes = FirebaseStorage.getInstance().getReference().child("images").child(offer.getIdProperty());
+
+        /**
+         * Función que recupera la imagen del alojamiento
+         */
+        refImagenes.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                if (listResult.getItems().size() > 0) {
+                    StorageReference refPrimeraImagen = listResult.getItems().get(0);
+
+                    refPrimeraImagen.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(AccommodationDetailsActivity.this)
+                                    .load(uri)
+                                    .into(foto_usuario);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Error", "Error al obtener la URL de descarga: " + e.getMessage());
+                        }
+                    });
+                } else {
+                    Log.e("Error", "No se encontraron imágenes en la carpeta");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Error", "Error al listar las imágenes: " + e.getMessage());
+            }
+        });
+
+
         setup();
     }
+
+    /**
+     * Función que configura los elementos de esta actividad
+     */
     private void setup() {
+
         binding.buttonExit.setOnClickListener(event -> {
             finish();
         });

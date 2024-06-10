@@ -57,7 +57,7 @@ public class AddBedDialogFragment extends DialogFragment {
         String quantityText = binding.bedQuantity.getText().toString().trim();
 
         if(category.isEmpty() || quantityText.isEmpty() ) {
-            utils.showAlert(getActivity(), "Error", "Por favor, complete los campos Categoría y Precio");
+            utils.showAlert(getActivity(), "Error", "Por favor, complete los campos Categoría y Cantidad");
             return;
         }
 
@@ -65,13 +65,11 @@ public class AddBedDialogFragment extends DialogFragment {
 
         Bed bed = new Bed(category, quantity);
 
-        // Notificar al listener
         if (listener != null) {
             Log.e("Entra", bed.toString());
             listener.onBedAdded(bed);
         }
 
-        // Cerrar el diálogo
         dismiss();
     }
 

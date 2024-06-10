@@ -15,6 +15,13 @@ public class RecyclerViewItemDecoration extends RecyclerView.ItemDecoration {
         mDivider = ContextCompat.getDrawable(context, resId);
     }
 
+    /**
+     * Se añaden lineas divisorias entre los elementos de un recycleview
+     *
+     * @param c      Canvas to draw into
+     * @param parent RecyclerView this ItemDecoration is drawing into
+     * @param state  The current state of RecyclerView
+     */
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDraw(c, parent, state);

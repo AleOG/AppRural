@@ -6,11 +6,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.proyecto.apprural.databinding.PropertyPublishItemBinding;
 import com.proyecto.apprural.databinding.SearchResultItemBinding;
 import com.proyecto.apprural.model.beans.FullAccommodationOffer;
-import com.proyecto.apprural.model.beans.Offer;
-
 import java.util.List;
 
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.SearchResultsViewHolder> {

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
 import com.proyecto.apprural.databinding.RoomAltaActivityBinding;
 import com.proyecto.apprural.model.beans.Bed;
 import com.proyecto.apprural.model.beans.Room;
@@ -43,21 +42,16 @@ public class RoomAltaActivity extends AppCompatActivity implements
         binding = RoomAltaActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Inicializar la listas
         serviceList = new ArrayList<>();
         bedList = new ArrayList<>();
         setCategorySelect();
 
-        // Configurar el RecyclerView
         setupRecyclerView();
 
-        // Configurar el botón para añadir un servicio
         binding.addServiceBtn.setOnClickListener(event -> showAddServiceDialog());
 
-        // Configurar el botón para añadir una cama
         binding.addBedBtn.setOnClickListener(event -> showAddBedDialog());
 
-        //Configurar el botón de guardado
         binding.saveBtn.setOnClickListener(event -> {
 
             String roomName = binding.roomNameInput.getText().toString().trim();
@@ -66,7 +60,6 @@ public class RoomAltaActivity extends AppCompatActivity implements
             if(roomName.isEmpty() || roomCategory.isEmpty() || priceText.isEmpty() || bedList.size() < 1) {
                 utils.showAlert(this, "Error", "La habitación debe tener nombre, categorías, precio y al menos una cama.");
             }else {
-                // Generar el ID del servicio
                 UUID uuid = UUID.randomUUID();
                 String id = uuid.toString();
                 double price = Double.parseDouble(priceText);
@@ -80,15 +73,20 @@ public class RoomAltaActivity extends AppCompatActivity implements
             }
         });
 
-        //Configurar el botón de salir
         binding.exitBtn.setOnClickListener(event -> finish());
     }
 
+    /**
+     * Función que configura el selector para elegir la categoría de la habitación
+     */
     private void setCategorySelect() {
         ArrayAdapter<RoomCategory> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         binding.roomCategorySpinner.setAdapter(adapter);
     }
 
+    /**
+     * Función que inicializa y configura el recyclerView
+     */
     private void setupRecyclerView() {
         serviceAdapter = new ServiceAdapter(serviceList, this);
         binding.servicesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -99,12 +97,18 @@ public class RoomAltaActivity extends AppCompatActivity implements
         binding.bedsRecyclerView.setAdapter(bedAdapter);
     }
 
+    /**
+     * Función que configura el popup dialog para añadir servicios
+     */
     private void showAddServiceDialog() {
         AddServiceDialogFragment dialogFragment = AddServiceDialogFragment.newInstance();
         dialogFragment.setServiceAddListener(this);
         dialogFragment.show(getSupportFragmentManager(), "AddServiceDialogFragment");
     }
 
+    /**
+     * Función que configura el popup dialog para añadir camas
+     */
     private void showAddBedDialog() {
         AddBedDialogFragment dialogFragment = AddBedDialogFragment.newInstance();
         dialogFragment.setBedAddListener(this);
@@ -116,6 +120,11 @@ public class RoomAltaActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Función que elimina un servicio del recycleview de servicios
+     *
+     * @param service
+     */
     @Override
     public void onRemoveService(Service service) {
         serviceList.remove(service);
@@ -123,6 +132,11 @@ public class RoomAltaActivity extends AppCompatActivity implements
         Toast.makeText(this, "Servicio eliminado", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Función que añade un servicio al recycleview de servicios
+     *
+     * @param service
+     */
     @Override
     public void onServiceAdded(Service service) {
         serviceList.add(service);
@@ -130,6 +144,11 @@ public class RoomAltaActivity extends AppCompatActivity implements
         Toast.makeText(this, "Servicio añadido", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Función que añade una cama al recycleview de camas
+     *
+     * @param bed
+     */
     @Override
     public void onBedAdded(Bed bed) {
         Log.e("Cambia", bed.toString());
@@ -143,6 +162,11 @@ public class RoomAltaActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Función que elimina una cama del recycleview de camas
+     *
+     * @param bed
+     */
     @Override
     public void onRemoveBed(Bed bed) {
         bedList.remove(bed);

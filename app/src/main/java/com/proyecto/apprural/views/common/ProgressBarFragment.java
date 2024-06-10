@@ -11,10 +11,7 @@ import com.proyecto.apprural.databinding.ProgressBarFragmentBinding;
 
 public class ProgressBarFragment extends Fragment {
 
-    // Properties
     private ProgressBarFragmentBinding binding;
-
-    // Initialization
 
     @Nullable
     @Override
@@ -29,7 +26,6 @@ public class ProgressBarFragment extends Fragment {
         binding = null;
     }
 
-    // Companion object
     public static ProgressBarFragment newInstance() {
         return new ProgressBarFragment();
     }

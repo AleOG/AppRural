@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 public class Client extends User implements Serializable {
     private String name;
-
     private String subRole;
     private String firstLastName;
     private String secondLastName;
@@ -96,8 +95,8 @@ public class Client extends User implements Serializable {
             return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
-        this.dateOfBirth = dateOfBirth.toString();
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getCreditCardNumber() {

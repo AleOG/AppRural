@@ -53,11 +53,6 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceV
             binding.setService(service);
             binding.executePendingBindings();
 
-            /*binding.editButton.setOnClickListener(v -> {
-                if (serviceActionListener != null) {
-                    serviceActionListener.onEditService(service);
-                }
-            });*/
 
             binding.removeButton.setOnClickListener(v -> {
                 if (serviceActionListener != null) {

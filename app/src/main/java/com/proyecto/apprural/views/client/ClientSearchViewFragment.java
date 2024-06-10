@@ -1,6 +1,5 @@
 package com.proyecto.apprural.views.client;
 
-import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -8,16 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.proyecto.apprural.databinding.ClientSearchViewFragmentBinding;
-import com.proyecto.apprural.databinding.ClientViewFragmentBinding;
 import com.proyecto.apprural.utils.Util;
 
 import java.time.LocalDateTime;
@@ -57,7 +53,6 @@ public class ClientSearchViewFragment extends Fragment {
         binding.arrivalBtn.setOnClickListener(event -> {
             Calendar calendar = Calendar.getInstance();
             long fechaMin = calendar.getTimeInMillis();
-            //Establecer una fecha máxima de 5 años desìes de la fecha actual
             calendar.add(Calendar.YEAR, 5);
             long fechaMax = calendar.getTimeInMillis();
 
@@ -76,7 +71,6 @@ public class ClientSearchViewFragment extends Fragment {
         binding.departureBtn.setOnClickListener(event -> {
             Calendar calendar = Calendar.getInstance();
             long fechaMin = calendar.getTimeInMillis();
-            //Establecer una fecha máxima de 5 años desìes de la fecha actual
             calendar.add(Calendar.YEAR, 5);
             long fechaMax = calendar.getTimeInMillis();
 
@@ -109,8 +103,7 @@ public class ClientSearchViewFragment extends Fragment {
 
             double precioMinAunx = minPrecioString.isEmpty() ? 0 : Double.parseDouble(minPrecioString);
             double precioMaxAux = maxPrecioString.isEmpty() ? Double.POSITIVE_INFINITY : Double.parseDouble(maxPrecioString);
-            //Log.e("fecha llegada", arrivalDateString);
-            //Log.e("fecha salida", departureDateString);
+
             if(arrivalDateString.isEmpty() && !departureDateString.isEmpty()) {
                 utils.showAlert(getContext(), "Aviso", "Selecciona fecha de llegada.");
                 return;
@@ -125,18 +118,28 @@ public class ClientSearchViewFragment extends Fragment {
                 return;
             }
 
-            bundle.putString("minPrecio", minPrecioString); // Suponiendo que minPrecio es un int
-            bundle.putString("maxPrecio", maxPrecioString); // Suponiendo que maxPrecio es un int
-            bundle.putString("arrivalDate", arrivalDateString); // Suponiendo que arrivalDate es un String
-            bundle.putString("departureDate", departureDateString); // Suponiendo que departureDate es un String
-            bundle.putString("destination", destinationString); // Suponiendo que destination es un String
-            bundle.putString("travelers", travelersString); // Suponiendo que travelers es un int
+            bundle.putString("minPrecio", minPrecioString);
+            bundle.putString("maxPrecio", maxPrecioString);
+            bundle.putString("arrivalDate", arrivalDateString);
+            bundle.putString("departureDate", departureDateString);
+            bundle.putString("destination", destinationString);
+            bundle.putString("travelers", travelersString);
 
             new ClientRouter().launch(getActivity(), bundle);
         });
     }
 
 
+    /**
+     * Función que resetea los campos de búsqueda de alojamientos
+     *
+     * @param minPrice
+     * @param maxPrice
+     * @param arrivalDate
+     * @param departureDate
+     * @param destinationInput
+     * @param travelersInput
+     */
     private void resetFields(EditText minPrice, EditText maxPrice, TextView arrivalDate, TextView departureDate, EditText destinationInput, EditText travelersInput) {
         minPrice.setText("");
         maxPrice.setText("");

@@ -56,19 +56,16 @@ public class PropertyAdapter extends RecyclerView.Adapter<PropertyAdapter.Proper
             binding.setProperty(property);
             binding.executePendingBindings();
 
-            //view boton
             binding.btnView.setOnClickListener(event -> {
                 if(propertyActionListener != null) {
                     propertyActionListener.onViewProperty(property);
                 }
             });
-            //accept boton
             binding.btnAccept.setOnClickListener(event -> {
                 if(propertyActionListener != null) {
                     propertyActionListener.onAcceptProperty(property);
                 }
             });
-            //block boton
             binding.btnCancel.setOnClickListener(event -> {
                 if(propertyActionListener != null) {
                     propertyActionListener.onBlockProperty(property);

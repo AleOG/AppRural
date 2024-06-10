@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.proyecto.apprural.views.client.SearchResultsActivity;
 import com.proyecto.apprural.views.router.ActivityRouter;
 
 public class AccommodationDetailsRouter implements ActivityRouter {

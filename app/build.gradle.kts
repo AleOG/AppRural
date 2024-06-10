@@ -85,12 +85,16 @@ dependencies {
     implementation ("com.google.firebase:firebase-messaging")
     implementation ("com.google.firebase:firebase-database:21.0.0")
     implementation ("com.google.firebase:firebase-config")
+    implementation ("com.google.firebase:firebase-storage")
 
     //GOOGLE
     implementation ("com.google.android.gms:play-services-auth:21.1.1")
 
     //JACKSON
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.0")
+
+    //GLIDE
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.0")

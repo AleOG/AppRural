@@ -30,7 +30,6 @@ public class AddProhibitionDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //return inflater.inflate(R.layout.dialog_add_service, container, false);
         binding = DialogAddProhibitionBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -45,27 +44,20 @@ public class AddProhibitionDialogFragment extends DialogFragment {
 
     private void onSaveClicked() {
         String name = binding.editTextName.getText().toString().trim();
-        // Verificar si se ha introducido un valor en editTextName y editTextPrice
         if (name.isEmpty()) {
-            // Mostrar un mensaje de error o indicar al usuario que complete los campos
             utils.showAlert(getActivity(), "Error", "Por favor, complete el campo Nombre");
-            return; // Salir del método sin guardar el servicio
+            return;
         }
 
-        // Generar el ID del servicio
         UUID uuid = UUID.randomUUID();
         String id = uuid.toString();
 
-        // Crear el objeto Prohibicion
         Prohibition prohibition = new Prohibition(id, name);
 
-
-        // Notificar al listener
         if (listener != null) {
             listener.onProhibitionAdded(prohibition);
         }
 
-        // Cerrar el diálogo
         dismiss();
     }
 

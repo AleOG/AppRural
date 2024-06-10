@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.ClientViewFragmentBinding;
-import com.proyecto.apprural.views.logIn.LoginRouter;
 
 public class ClientViewFragment extends Fragment {
 

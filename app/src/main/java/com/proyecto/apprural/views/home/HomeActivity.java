@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.views.admin.AdminRouter;
 import com.proyecto.apprural.views.client.ClientRouter;
@@ -18,33 +17,29 @@ import com.proyecto.apprural.views.owner.OwnerRouter;
 
 public class HomeActivity extends AppCompatActivity {
 
-    // Properties
-
     private HomeActivityBinding binding;
     private ClientRouter clientViewFragment = null;
     private AdminRouter adminViewFragment = null;
     private OwnerRouter ownerViewFragment = null;
-
-    // Initialization
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = HomeActivityBinding.inflate(getLayoutInflater());
 
-        // Content
         setContentView(binding.getRoot());
 
-        // Setup
         loadTabsMenu();
         defaultTabMenu();
 
     }
 
 
+    /**
+     * Función que sirve para configuración entre perfiles en el menú principal
+     */
     private void loadTabsMenu() {
 
-        // Fragments
         if (clientViewFragment != null) {
             clientViewFragment.remove(getSupportFragmentManager());
         }
@@ -100,6 +95,9 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Función que abre como default la opción de "Huésped" en el menú
+     */
     private void defaultTabMenu() {
         binding.homeBottomNavigationView.setSelectedItemId(R.id.client_menu);
     }

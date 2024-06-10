@@ -23,6 +23,13 @@ public class PropertyService {
         databaseReference = database.getReference();
     }
 
+    /**
+     * Función que sirve para recuperar la propiedad de base de datos en función a su id
+     *
+     * @param ownerID
+     * @param propertyID
+     * @param callback
+     */
     public void getPropertyById(String ownerID, String propertyID, PropertyCallback callback) {
         databaseReference.child("properties").child(ownerID)
                 .child("propertiesOwner").child(propertyID).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -44,8 +51,15 @@ public class PropertyService {
                 });
     }
 
+    /**
+     * Función que modifica el campo "published" a true en una propiedad en base de datos cuando esta se oferta
+     *
+     * @param ownerID
+     * @param propertyID
+     * @param state
+     * @param callback
+     */
     public void updatePublishedProperty(String ownerID, String propertyID, Boolean state, UpdateCallback callback) {
-        // Crea un mapa para actualizar el campo 'published' a 'true'
         Map<String, Object> updates = new HashMap<>();
         updates.put("published", state);
 
@@ -53,17 +67,22 @@ public class PropertyService {
                 .child("propertiesOwner").child(propertyID)
                 .updateChildren(updates).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                // La actualización fue exitosa
                 callback.onUpdateComplete(true);
             } else {
-                // Hubo un error al actualizar
                 callback.onUpdateComplete(false);
             }
         });
     }
 
+    /**
+     * Función que modifica el campo "published" a false en una propiedad en base de datos cuando esta se deja de ser ofertada
+     *
+     * @param ownerID
+     * @param propertyID
+     * @param state
+     * @param callback
+     */
     public void updatePublishedPropertyToFalse(String ownerID, String propertyID, Boolean state, UpdateCallback callback) {
-        // Crea un mapa para actualizar el campo 'published' a 'true'
         Map<String, Object> updates = new HashMap<>();
         updates.put("published", state);
 
@@ -71,10 +90,8 @@ public class PropertyService {
                 .child("propertiesOwner").child(propertyID)
                 .updateChildren(updates).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // La actualización fue exitosa
                         callback.onUpdateComplete(true);
                     } else {
-                        // Hubo un error al actualizar
                         callback.onUpdateComplete(false);
                     }
                 });

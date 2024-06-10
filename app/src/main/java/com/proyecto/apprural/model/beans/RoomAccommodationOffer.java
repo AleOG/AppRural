@@ -5,7 +5,6 @@ import java.util.List;
 
 public class RoomAccommodationOffer extends Offer implements Serializable {
     private String idRoom;
-
     private String idProperty;
     private String category;
     private String status;

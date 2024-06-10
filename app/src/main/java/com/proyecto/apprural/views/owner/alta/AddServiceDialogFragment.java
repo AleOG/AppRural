@@ -50,32 +50,25 @@ public class AddServiceDialogFragment extends DialogFragment {
         Boolean included = binding.checkboxIncluded.isChecked();
         // Verificar si se ha introducido un valor en editTextName y editTextPrice
         if (name.isEmpty() || priceText.isEmpty()) {
-            // Mostrar un mensaje de error o indicar al usuario que complete los campos
             utils.showAlert(getActivity(), "Error", "Por favor, complete los campos Nombre y Precio");
-            return; // Salir del método sin guardar el servicio
+            return;
         }
 
-        // Convertir el precio a double
         double price = Double.parseDouble(priceText);
 
-        // Generar el ID del servicio
         UUID uuid = UUID.randomUUID();
         String id = uuid.toString();
 
-        // Crear el objeto Service
         Service service = new Service(id, name, included, price);
 
-        //Si el servicio está incluido, el precio es 0
         if(included) {
             service.setPrice(0);
         }
 
-        // Notificar al listener
         if (listener != null) {
             listener.onServiceAdded(service);
         }
 
-        // Cerrar el diálogo
         dismiss();
     }
 

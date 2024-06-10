@@ -19,6 +19,12 @@ public class OfferService {
         databaseReference = database.getReference();
     }
 
+    /**
+     * Función usada para guardar el alojamiento ofertado en base de datos
+     *
+     * @param offer
+     * @param callback
+     */
     public void saveFullAccommodationOffer(FullAccommodationOffer offer, SaveCallback callback) {
         String propertyID = offer.getIdProperty();
         databaseReference.child("offers").child(propertyID).setValue(offer).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -35,6 +41,12 @@ public class OfferService {
         });
     }
 
+    /**
+     * Función que sirve para eliminar el alojamiento ofertado de base de datos
+     *
+     * @param propertyID
+     * @param callback
+     */
     public void deleteFullAccommodationOffer(String propertyID, DeleteCallback callback) {
         databaseReference.child("offers").child(propertyID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

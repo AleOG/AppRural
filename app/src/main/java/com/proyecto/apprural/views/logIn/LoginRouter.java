@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import com.proyecto.apprural.views.owner.OwnerViewFragment;
 import com.proyecto.apprural.views.router.FragmentRouter;
 
 public class LoginRouter implements FragmentRouter {

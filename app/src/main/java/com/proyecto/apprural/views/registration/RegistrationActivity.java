@@ -5,24 +5,15 @@ import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.DatePicker;
 import android.widget.TextView;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +22,6 @@ import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.RegistrationActivityBinding;
 import com.proyecto.apprural.model.beans.Client;
 import com.proyecto.apprural.utils.Util;
-
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
@@ -49,22 +39,21 @@ public class RegistrationActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.registration_activity);
         client = new Client();
 
-        // Obtén el intent que inició esta actividad
         Intent intent = getIntent();
-        // Recupera el Bundle de extras del intent
         Bundle bundle = intent.getExtras();
 
-        // Verifica que el bundle no sea null
         if (bundle != null) {
             client = createClient(client);
 
-        } else {
         }
         binding.setClient(client);
         setup();
     }
 
 
+    /**
+     * Función que configura los elementos de la actividad
+     */
     private void setup() {
 
         TextView selectedDate = binding.dateOfBirth;
@@ -83,15 +72,54 @@ public class RegistrationActivity extends AppCompatActivity {
             utils.showDatePickerDialog(selectedDate, this, 0, today);
         });
 
-        //registro del usuario
         binding.registerButton.setOnClickListener(event -> {
-            registerUser(client);
+            if(checkFields()) {
+                registerUser(client);
+            }
         });
     }
 
+    /**
+     * Función que comprueba que todos los campos del formulario de creación de la actividad han sido completados
+     *
+     * @return
+     */
+    private boolean checkFields() {
+        String name = binding.name.getText().toString();
+        String firstLastName = binding.firstLastName.getText().toString();
+        String secondLastName = binding.secondLastName.getText().toString();
+        String dni = binding.dni.getText().toString();
+        String phoneNumber = binding.phoneNumber.getText().toString();
+        String dateOfBirth = binding.dateOfBirth.getText().toString();
+        String email = binding.email.getText().toString();
+        String password = binding.password.getText().toString();
+        String creditCardNumber = binding.creditCardNumber.getText().toString();
+        String bankAccountNumber = binding.bankAccountNumber.getText().toString();
+
+        if (!name.isEmpty() || !firstLastName.isEmpty() || !secondLastName.isEmpty()
+                || !dni.isEmpty() || !phoneNumber.isEmpty() || !dateOfBirth.isEmpty()
+                || !email.isEmpty() || !password.isEmpty() || !creditCardNumber.isEmpty()
+                || !bankAccountNumber.isEmpty()) {
+            if (email.contains("@gmail.com")) {
+                return true;
+            } else {
+                utils.showAlert(this, "Aviso", "El email debe contener @gmail.com");
+                return false;
+            }
+        } else {
+            utils.showAlert(this, "Aviso", "Debes completar todos los campos.");
+            return false;
+        }
+    }
 
 
     // Método para registrar un nuevo usuario y guardar su rol en Firestore
+
+    /**
+     * Función que guarda un usuario en base de datos y además almacena sus credenciales email y password en el servicio de identificación de firebase
+     *
+     * @param theClient
+     */
     private void registerUser(Client theClient) {
         if(theClient.getEmail() != null && theClient.getPassword() != null) {
             Log.e("cliente", client.toString());
@@ -101,15 +129,13 @@ public class RegistrationActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
-                                // Obtener el email del usuario registrado
                                 String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                                //generar el id en base al email
                                 String userId = utils.generateID(userEmail);
                                 client.setUserId(userId);
                                 String fecha = binding.dateOfBirth.getText().toString().trim();
                                 if(!fecha.isEmpty()) {
                                     LocalDateTime dateTime = utils.formatStringDateToLocalDateTime(fecha);
-                                    client.setDateOfBirth(dateTime);
+                                    client.setDateOfBirth(dateTime.toString());
                                 }
 
                                 DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -134,10 +160,16 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            utils.showAlert(RegistrationActivity.this, "Error", "Email o contraseña no válidos");
+            utils.showAlert(RegistrationActivity.this, "Error", "Email o contraseña erroneos");
         }
     }
 
+    /**
+     * Función que asigna los valores por defecto de un usuario cliente (propietario o huésped)
+     *
+     * @param client
+     * @return
+     */
     private Client createClient(Client client) {
         client.setRole("client");
         client.setNumberOfProperties(0);

@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.proyecto.apprural.views.admin.AdminViewActivity;
 import com.proyecto.apprural.views.router.ActivityRouter;
 import com.proyecto.apprural.views.router.FragmentRouter;
 
@@ -36,9 +35,7 @@ public class ClientRouter implements FragmentRouter, ActivityRouter {
     @Override
     public int show(FragmentManager manager) {
         Fragment fragment = fragment();
-        /*if (fragment instanceof ClienteViewFragment) {
-            ((ClienteViewFragment) fragment).load();
-        }*/
+
         return manager.beginTransaction().show(fragment).commitAllowingStateLoss();
     }
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Room implements Serializable {
     private String roomId;
-
     private String name;
     private String category;
     private boolean published;

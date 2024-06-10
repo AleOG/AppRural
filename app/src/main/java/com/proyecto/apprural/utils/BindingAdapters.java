@@ -10,10 +10,25 @@ import com.proyecto.apprural.model.beans.Prohibition;
 import com.proyecto.apprural.model.beans.Property;
 import com.proyecto.apprural.model.beans.Room;
 import com.proyecto.apprural.model.beans.Service;
+import com.proyecto.apprural.model.beans.User;
 
 import java.util.List;
 
 public class BindingAdapters {
+
+    @BindingAdapter("loginTitle")
+    public static void setLoginTitle(TextView textView, String role) {
+        String text = "";
+        if(role.equals("admin")) {
+            text = "Login del Administrador";
+        }else if(role.equals("owner")) {
+            text = "Login del Propietario";
+        }else {
+            text = "Login del Huésped";
+        }
+        textView.setText(text);
+    }
+
     @BindingAdapter("priceWithCurrency")
     public static void setPriceWithCurrency(TextView textView, double price) {
         textView.setText(String.format("%.2f €", price));
@@ -78,7 +93,6 @@ public class BindingAdapters {
         if (!hasLocation) {
             textBuilder.append("No tiene");
         } else {
-            // Eliminar la última coma y espacio si hay algún texto
             int length = textBuilder.length();
             if (textBuilder.charAt(length - 2) == ',') {
                 textBuilder.delete(length - 2, length);
@@ -187,7 +201,7 @@ public class BindingAdapters {
                 sb.append(bed.getType()).append("(").append(bed.getQuantity()).append(")").append(", ");
             }
             if (sb.length() > 0) {
-                sb.setLength(sb.length() - 2); // Elimina la última coma y espacio
+                sb.setLength(sb.length() - 2);
             }
             return sb.toString();
         }else {

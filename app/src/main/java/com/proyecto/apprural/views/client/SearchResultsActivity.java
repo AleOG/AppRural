@@ -2,7 +2,6 @@ package com.proyecto.apprural.views.client;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
@@ -80,7 +79,7 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
             }
 
         }
-        seupAdapter();
+        setRecyclerView();
         searchOffers(minPrecio, maxPrecio, arrivalDate, departureDate, destination, travelers);
 
         binding.exitButton.setOnClickListener(event -> {
@@ -88,7 +87,11 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
         });
     }
 
-    private void seupAdapter() {
+
+    /**
+     * Función que inicializa y configura el recycleviw de la actividad
+     */
+    private void setRecyclerView() {
         adapter = new SearchResultsAdapter(resultsList, this);
         binding.resultsRecyclerView.setAdapter(adapter);
         binding.resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -181,6 +184,13 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
         });
     }
 
+    /**
+     * Función que filtra por destino
+     *
+     * @param offer
+     * @param destination
+     * @return
+     */
     private boolean matchesDestination(Offer offer, String destination) {
         if(destination.isEmpty()) {
             return true;
@@ -191,7 +201,6 @@ public class SearchResultsActivity extends AppCompatActivity implements SearchRe
 
     @Override
     public void onClick(FullAccommodationOffer offer) {
-        //Log.e("offer recuperada", offer.toString());
         Bundle bundle = new Bundle();
         bundle.putSerializable("offer", offer);
 

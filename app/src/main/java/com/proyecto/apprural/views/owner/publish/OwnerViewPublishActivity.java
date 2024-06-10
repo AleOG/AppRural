@@ -44,26 +44,26 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.owner_view_publish_activity);
         binding.setLifecycleOwner(this);
-        // Inicializa la referencia de la base de datos
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         propertyList = new ArrayList<>();
         propertyService = new PropertyService();
         offerService = new OfferService();
-        // Configura la sesión
+
         session();
 
-        // Configura RecyclerView
         setupRecyclerView();
 
-        // Obtén la lista de propiedades
         getPropertiesList();
-        Log.e("actua1", "actua");
 
         binding.exitBtn.setOnClickListener(event -> {
             finish();
         });
     }
 
+    /**
+     * Función que recupera de SharePreferences el email del usuario
+     */
     private void session() {
         misDatos = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
         String email = misDatos.getString("email", null);
@@ -76,6 +76,9 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
         Toast.makeText(getApplicationContext(), "email session " + emailSession, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Función que inicializa y configura el recycleview de la actividad
+     */
     private void setupRecyclerView() {
         publishPropertyAdapter = new PublishPropertyAdapter(propertyList, this);
         binding.setMyAdapter(publishPropertyAdapter);
@@ -83,8 +86,10 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
     }
 
 
+    /**
+     * Función que recupera todas las propiedades de un usuario
+     */
     private void getPropertiesList() {
-        Log.e("actua2", "actua");
 
         String ownerID = utils.generateID(emailSession);
         mDatabase.child("properties").child(ownerID).child("propertiesOwner").addValueEventListener(new ValueEventListener() {
@@ -101,19 +106,24 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
                     }
                 }
 
-                publishPropertyAdapter.notifyDataSetChanged(); // Notifica al adaptador que los datos han cambiado
+                publishPropertyAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Maneja el error
                 Log.w("DatabaseError", "loadPost:onCancelled", databaseError.toException());
             }
         });
     }
 
 
-
+    /**
+     * Función que actualiza el atributo "published" en el recycleview de las propiedades
+     *
+     * @param propertyList
+     * @param propertyToUpdate
+     * @param status
+     */
     public void updatePublishedStatus(List<Property> propertyList, Property propertyToUpdate, boolean status) {
         for (Property property : propertyList) {
             if (property.getPropertyId().equals(propertyToUpdate.getPropertyId())) {
@@ -123,6 +133,11 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
         publishPropertyAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Función que selecciona una propiedad de la lista en base a su id
+     *
+     * @param property
+     */
     private void getPropertyById(Property property) {
         String ownerID = property.getOwnerId();
         String propertyID = property.getPropertyId();
@@ -135,6 +150,11 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * Función que inicializa un objeto Offer y lo guarda en base de datos
+     *
+     * @param property
+     */
     private void saveFullAccommodationOffer(Property property) {
         FullAccommodationOffer offer = new FullAccommodationOffer(
                 property.getOwnerId(), true, true, property.getName(),
@@ -153,6 +173,13 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
             }
         });
     }
+
+    /**
+     * Función que actualiza la publicación de una propiedad
+     *
+     * @param property
+     * @param status
+     */
     private void updatePublishedProperty(Property property, boolean status) {
         String ownerID = property.getOwnerId();
         String propertyID = property.getPropertyId();
@@ -160,15 +187,19 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
             if (result) {
                 updatePublishedStatus(propertyList, property, status);
                 publishPropertyAdapter.notifyDataSetChanged();
-                Log.e("success", "el campo published ha sido actualizado a " + status);
+                Log.e("exito", "el campo published ha sido actualizado a " + status);
             } else {
-                Log.e("fail", "el campo published no ha sido actualizado a " + status);
+                Log.e("fallo", "el campo published no ha sido actualizado a " + status);
             }
         });
     }
 
 
-
+    /**
+     * Función que elimina una oferta de base de datos
+     *
+     * @param property
+     */
     private void deleteFullAccommodationOffer(Property property) {
         String propertyID = property.getPropertyId();
         offerService.deleteFullAccommodationOffer(propertyID, result -> {
@@ -181,6 +212,11 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
         });
     }
 
+    /**
+     * Función que despublica una oferta
+     *
+     * @param property
+     */
     private void updatePublishedPropertyToFalse(Property property) {
         String ownerID = property.getOwnerId();
         String propertyID = property.getPropertyId();
@@ -188,9 +224,9 @@ public class OwnerViewPublishActivity extends AppCompatActivity implements
             if (result) {
                 updatePublishedStatus(propertyList, property, false);
                 publishPropertyAdapter.notifyDataSetChanged();
-                Log.e("success", "el campo published ha sido actualizado a false");
+                Log.e("exito", "el campo published ha sido actualizado a false");
             } else {
-                Log.e("fail", "el campo published no ha sido actualizado a false");
+                Log.e("error", "el campo published no ha sido actualizado a false");
             }
         });
     }

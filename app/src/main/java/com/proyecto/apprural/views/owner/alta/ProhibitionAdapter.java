@@ -55,10 +55,6 @@ public class ProhibitionAdapter extends RecyclerView.Adapter<ProhibitionAdapter.
             binding.executePendingBindings();
 
 
-            /*binding.editButton.setOnClickListener(v -> {
-                // Lógica para editar el servicio
-            });*/
-
             binding.removeButton.setOnClickListener(v -> {
                 if(prohibitionActionListener != null) {
                     prohibitionActionListener.onRemoveProhibition(prohibition);

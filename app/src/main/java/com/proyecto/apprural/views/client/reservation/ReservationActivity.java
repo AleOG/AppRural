@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,13 +22,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.proyecto.apprural.R;
 import com.proyecto.apprural.databinding.ReservationActivityBinding;
 import com.proyecto.apprural.model.beans.FullAccommodationOffer;
-import com.proyecto.apprural.model.beans.Offer;
 import com.proyecto.apprural.model.beans.Reservation;
 import com.proyecto.apprural.utils.Util;
 import com.proyecto.apprural.views.home.HomeActivityRouter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -53,11 +55,10 @@ public class ReservationActivity extends AppCompatActivity {
         reservationList = new ArrayList<>();
         reservation = new Reservation();
 
-        // Retrieve FullAccommodationOffer from Intent
         FullAccommodationOffer offerAux = (FullAccommodationOffer) intent.getSerializableExtra("offer");
         Bundle bundle = intent.getExtras();
+
         if (offerAux != null) {
-            // Set offer to binding
             Log.e("offer en reservation", offerAux.toString());
             offer = offerAux;
             reservation.setOwnerId(offer.getIdOwner());
@@ -70,12 +71,10 @@ public class ReservationActivity extends AppCompatActivity {
         }
 
         String email = null;
-        // Verifica que el bundle no sea null
         if (bundle != null) {
             email = bundle.getString("email");
         }
 
-        //guardado de datos
         misDatos = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
         miEditor = misDatos.edit();
         miEditor.putString("email", email);
@@ -85,6 +84,9 @@ public class ReservationActivity extends AppCompatActivity {
         setup();
     }
 
+    /**
+     * Función que recupera el email de la sesión del usuario
+     */
     private void session() {
         misDatos = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
         String email = misDatos.getString("email", null);
@@ -97,6 +99,9 @@ public class ReservationActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "email session " + emailSession, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Función que inicializa y configura los elementos de esta actividad
+     */
     private void setup() {
 
         TextView checkinDate = binding.checkinDate;
@@ -105,7 +110,6 @@ public class ReservationActivity extends AppCompatActivity {
         binding.checkinBtn.setOnClickListener( event -> {
             Calendar calendar = Calendar.getInstance();
             long fechaMin = calendar.getTimeInMillis();
-            //Establecer una fecha máxima de 5 años desìes de la fecha actual
             calendar.add(Calendar.YEAR, 5);
             long fechaMax = calendar.getTimeInMillis();
 
@@ -124,7 +128,6 @@ public class ReservationActivity extends AppCompatActivity {
         binding.checkoutBtn.setOnClickListener(event -> {
             Calendar calendar = Calendar.getInstance();
             long fechaMin = calendar.getTimeInMillis();
-            //Establecer una fecha máxima de 5 años desìes de la fecha actual
             calendar.add(Calendar.YEAR, 5);
             long fechaMax = calendar.getTimeInMillis();
 
@@ -159,8 +162,99 @@ public class ReservationActivity extends AppCompatActivity {
         binding.exitButton.setOnClickListener( event -> {
             logoutAndFinish();
         });
+
+        checkinDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String newValue = s.toString();
+                String checkoutString = checkoutDate.getText().toString();
+                if(!checkoutString.isEmpty() && !newValue.isEmpty()) {
+                    LocalDateTime checkin = utils.formatStringDateToLocalDateTime(newValue);
+                    LocalDateTime checkout = utils.formatStringDateToLocalDateTime(checkoutString);
+                    long daysBetween = 0;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        daysBetween = ChronoUnit.DAYS.between(checkout, checkin);
+                    }
+
+                    Log.e("","Número de días entre check-in y check-out: " + daysBetween);
+                    if(daysBetween<0) {
+                        daysBetween = daysBetween*-1;
+                    }
+                    reservation.setPrice(offer.getPrice()*daysBetween);
+                    binding.setReservation(reservation);
+                    binding.executePendingBindings();
+                }
+            }
+        });
+
+        checkoutDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String newValue = s.toString();
+                String checkinString = checkinDate.getText().toString();
+                if (!checkinString.isEmpty() && !newValue.isEmpty()) {
+                    LocalDateTime checkin = utils.formatStringDateToLocalDateTime(newValue);
+                    LocalDateTime checkout = utils.formatStringDateToLocalDateTime(checkinString);
+                    long daysBetween = 0;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        daysBetween = ChronoUnit.DAYS.between(checkout, checkin);
+                    }
+
+                    Log.e("", "Número de días entre check-in y check-out: " + daysBetween);
+                    if(daysBetween<0) {
+                        daysBetween = daysBetween*-1;
+                    }
+                    reservation.setPrice(offer.getPrice()*daysBetween);
+                    binding.setReservation(reservation);
+                    binding.executePendingBindings();
+                }
+            }
+        });
+
+        binding.resetReservationButton.setOnClickListener(event -> {
+            resetFields();
+        });
     }
 
+    /**
+     * Función que resetea los campos del formulario  de la reserva
+     */
+    private void resetFields() {
+        binding.name.setText("");
+        binding.firstlastname.setText("");
+        binding.secondLastName.setText("");
+        binding.numberGuests.setText("");
+
+        binding.checkinDate.setText("");
+        binding.checkoutDate.setText("");
+        binding.price.setText("");
+
+        reservation.setPrice(0.0);
+    }
+
+    /**
+     * Función que elimina los datos de sesión de SharePreferences, finaliza sesión en firebase, inicia la actividad de Home y finaliza el resto de actividades en stack.
+     */
     private void logoutAndFinish() {
         misDatos = getSharedPreferences(getString(R.string.prefs_file), Context.MODE_PRIVATE);
         miEditor = misDatos.edit();
@@ -172,6 +266,11 @@ public class ReservationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Función que comprueba que todos los campos del formulario tienen contenida
+     *
+     * @return
+     */
     private boolean areFieldsFilled() {
         String name = binding.name.getText().toString();
         String firstLastName = binding.firstlastname.getText().toString();
@@ -184,13 +283,11 @@ public class ReservationActivity extends AppCompatActivity {
                 !checkinDate.isEmpty() && !checkoutDate.isEmpty() && !numberGuests.isEmpty();
     }
 
+    /**
+     * Función que asigna los datos de la reserva y la guarda en base de datos
+     */
     private void createAndSaveReservation() {
-        /*
-        * , double price,
 
-                       List<Room> rooms, List<Service> extraServicesProperty, List<Service> extraServicesRooms
-        * */
-        // Obtener los valores de los campos
         String name = binding.name.getText().toString();
         String firstLastName = binding.firstlastname.getText().toString();
         String secondLastName = binding.secondLastName.getText().toString();
@@ -201,8 +298,7 @@ public class ReservationActivity extends AppCompatActivity {
 
         String reservationCode = UUID.randomUUID().toString();
         String fullName = name + " "+ firstLastName +" " + secondLastName;
-        // Crear una nueva instancia de Reservation con los valores obtenidos
-        //Reservation reservation = new Reservation(fullName, checkinDate, checkoutDate, numberGuests);
+
         reservation.setReservationCode(reservationCode);
         reservation.setCheckin(checkinDate);
         reservation.setCheckout(checkoutDate);
@@ -215,13 +311,18 @@ public class ReservationActivity extends AppCompatActivity {
         reservation.setGuestId(utils.generateID(emailSession));
         reservation.setGuestName(fullName);
         reservation.setBookingType("Alojamiento completo");
-        // Mostrar un mensaje de éxito
         Log.e("reserva creada", reservation.toString());
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("reservations");
         databaseReference.push().setValue(reservation);
-        Toast.makeText(getApplicationContext(), "Reserva creada y guardada correctamente", Toast.LENGTH_SHORT).show();
+
+        utils.showAlert(this, "Éxito", "Reserva creada y guardada correctamente");
     }
 
+    /**
+     * Función que recupera una reserva en base a el id de la propiedad donde se ha hecho.
+     *
+     * @param propertyID
+     */
     private void recoverReservationByOfferId(String propertyID) {
         DatabaseReference databaseReference;
         databaseReference = FirebaseDatabase.getInstance().getReference("reservations");

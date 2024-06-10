@@ -191,6 +191,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imagen_usuario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center_horizontal"/>
+
+                <Button
+                    android:id="@+id/foto_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Añadir imagen"/>
+            </LinearLayout>
+
             <!-- Botón de guardar al lado del botón de salir-->
             <LinearLayout
                 android:layout_width="match_parent"
